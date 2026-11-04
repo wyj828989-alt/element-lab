@@ -15,6 +15,7 @@
   --accent:#0d8486; --accent-ink:#ffffff; --accent-soft:#dff2f1; --navy:#16304f; --navy-ink:#ffffff;
   --signal:#c98a00; --signal-soft:#fff3d6; --ok:#1f8a4c; --ok-soft:#e1f4e8; --bad:#c23b3b; --bad-soft:#fbe6e6;
   --tile:#16304f; --tile-ink:#ffffff; --shadow:0 1px 2px rgba(19,35,57,.06),0 6px 18px rgba(19,35,57,.06);
+  --k-metal:#dfe9f7; --k-nonmetal:#d8f0df; --k-metalloid:#fae8c2;
   --paper:#ffffff; --paper-ink:#1b2430; --paper-line:#c9d3dc; --paper-accent:#0d6f71;
   --f-display:"Do Hyeon","IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif;
   --f-body:"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
@@ -24,12 +25,12 @@
   --bg:#0c1420; --surface:#132033; --surface-2:#0f1a2a; --ink:#e4ecf4; --muted:#9aabbf; --line:#28394f;
   --accent:#3cc2c0; --accent-ink:#06201f; --accent-soft:#123a3c; --navy:#1c3a5e; --navy-ink:#ffffff;
   --signal:#f0b93a; --signal-soft:#3a2f12; --ok:#4cc27d; --ok-soft:#163323; --bad:#ef6b6b; --bad-soft:#3a1a1c;
-  --tile:#2a4d78; --tile-ink:#ffffff; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;}}
+  --tile:#2a4d78; --tile-ink:#ffffff; --k-metal:#17283f; --k-nonmetal:#15302a; --k-metalloid:#33291a; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;}}
 :root[data-theme="dark"]{
   --bg:#0c1420; --surface:#132033; --surface-2:#0f1a2a; --ink:#e4ecf4; --muted:#9aabbf; --line:#28394f;
   --accent:#3cc2c0; --accent-ink:#06201f; --accent-soft:#123a3c; --navy:#1c3a5e; --navy-ink:#ffffff;
   --signal:#f0b93a; --signal-soft:#3a2f12; --ok:#4cc27d; --ok-soft:#163323; --bad:#ef6b6b; --bad-soft:#3a1a1c;
-  --tile:#2a4d78; --tile-ink:#ffffff; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;}
+  --tile:#2a4d78; --tile-ink:#ffffff; --k-metal:#17283f; --k-nonmetal:#15302a; --k-metalloid:#33291a; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;}
@@ -210,13 +211,21 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
 .chips{display:flex;flex-wrap:wrap;gap:5px;min-height:30px}
 .chip{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;font-size:14px;font-weight:600;border:0;cursor:pointer}
 .chip.on{background:var(--accent);color:var(--accent-ink)}
-.ptable{display:grid;grid-template-columns:repeat(18,minmax(36px,1fr));gap:3px;min-width:690px}
-.el{border:1.5px solid var(--line);background:var(--surface);border-radius:5px;padding:2px 0 3px;text-align:center;cursor:pointer;line-height:1.1;min-height:44px}
+.ptable{display:grid;grid-template-columns:repeat(18,minmax(44px,1fr));grid-template-rows:auto repeat(7,auto) 10px auto auto;gap:3px;min-width:860px}
+.el{border:1.5px solid var(--line);background:var(--surface);border-radius:5px;padding:2px 1px 3px;text-align:center;cursor:pointer;line-height:1.1;min-height:46px;min-width:0;overflow:hidden}
+.el.k-metal{background:var(--k-metal)}
+.el.k-nonmetal{background:var(--k-nonmetal)}
+.el.k-metalloid{background:var(--k-metalloid)}
 .el em{display:block;font-style:normal;font-size:10px;color:var(--muted);font-family:var(--f-mono)}
 .el b{font-family:var(--f-mono);font-size:16px}
-.el small{display:block;font-size:10px;color:var(--muted)}
-.el.on{background:var(--tile);border-color:var(--tile)}
+.el small{display:block;font-size:9.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.03em}
+.el.on{background:var(--tile);border-color:var(--tile);box-shadow:0 0 0 2px var(--signal)}
 .el.on b,.el.on em,.el.on small{color:var(--tile-ink)}
+.fslot{border:1.5px dashed var(--line);border-radius:5px;font-family:var(--f-mono);font-size:10px;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+.flabel{font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:flex-end;padding-right:6px;font-weight:600}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--line);display:inline-block}
 .glabel{font-family:var(--f-mono);font-size:11px;color:var(--muted);text-align:center;align-self:end}
 
 /* report */
@@ -544,7 +553,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
       </div>
       <label class="f">조사 출처<input id="rd-src" type="text" data-bind="rd.src" placeholder="예: ○○회사 누리집, ○○신문 기사(2026.10.)"></label>
       <div class="q">
-        <div class="qt">사용 원소 고르기 <span class="note">— 주기율표 타일을 누르면 추가되고, 다시 누르면 빠져요.</span></div>
+        <div class="qt">사용 원소 고르기 <span class="note">— 주기율표 타일을 누르면 추가되고, 다시 누르면 빠져요. 화면이 좁으면 표를 옆으로 밀어 보세요.</span></div>
+        <div class="legend"><span><i style="background:var(--k-metal)"></i>금속</span><span><i style="background:var(--k-nonmetal)"></i>비금속</span><span><i style="background:var(--k-metalloid)"></i>준금속</span><span><i style="background:var(--surface)"></i>성질이 아직 확실하지 않음</span><span><i style="background:var(--tile)"></i>내가 고른 원소</span></div>
         <div class="tablewrap"><div class="ptable" id="ptable"></div></div>
       </div>
       <div class="q">
@@ -619,16 +629,22 @@ const AREAS = [
   ["생분해 소재","썩는 플라스틱, 친환경 포장재, 친환경 PLA 빨대",'<path d="M7 28C7 14 16 7 30 6c0 14-8 22-21 22z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M7 28L21 15" stroke="currentColor" stroke-width="2"/>'],
   ["우리 팀만의 아이디어","위 목록에 없다면 팀이 직접 제안해 보기",'<path d="M18 4a9 9 0 0 0-5 16.5V25h10v-4.5A9 9 0 0 0 18 4z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M14 29h8" stroke="currentColor" stroke-width="2.4"/>']
 ];
-// periodic tiles: [Z, symbol, name, period(row), group(col)]
-const ELEMENTS = [
-  [1,"H","수소",1,1],[2,"He","헬륨",1,18],
-  [3,"Li","리튬",2,1],[4,"Be","베릴륨",2,2],[5,"B","붕소",2,13],[6,"C","탄소",2,14],[7,"N","질소",2,15],[8,"O","산소",2,16],[9,"F","플루오린",2,17],[10,"Ne","네온",2,18],
-  [11,"Na","나트륨",3,1],[12,"Mg","마그네슘",3,2],[13,"Al","알루미늄",3,13],[14,"Si","규소",3,14],[15,"P","인",3,15],[16,"S","황",3,16],[17,"Cl","염소",3,17],[18,"Ar","아르곤",3,18],
-  [19,"K","칼륨",4,1],[20,"Ca","칼슘",4,2],[26,"Fe","철",4,8],[29,"Cu","구리",4,11],[30,"Zn","아연",4,12],
-  [47,"Ag","은",5,11],[53,"I","아이오딘",5,17],
-  [22,"Ti","타이타늄",4,4],[25,"Mn","망가니즈",4,7],[27,"Co","코발트",4,9],[28,"Ni","니켈",4,10],
-  [79,"Au","금",6,11],[80,"Hg","수은",6,12],[82,"Pb","납",6,14]
-];
+// full periodic table: [Z, symbol, name, gridRow, gridCol] (row 1 = group labels, rows 2-8 = periods 1-7, rows 10-11 = f-block)
+const EL_SYMS="H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og".split(" ");
+const EL_NAMES="수소 헬륨 리튬 베릴륨 붕소 탄소 질소 산소 플루오린 네온 나트륨 마그네슘 알루미늄 규소 인 황 염소 아르곤 칼륨 칼슘 스칸듐 타이타늄 바나듐 크로뮴 망가니즈 철 코발트 니켈 구리 아연 갈륨 저마늄 비소 셀레늄 브로민 크립톤 루비듐 스트론튬 이트륨 지르코늄 나이오븀 몰리브데넘 테크네튬 루테늄 로듐 팔라듐 은 카드뮴 인듐 주석 안티모니 텔루륨 아이오딘 제논 세슘 바륨 란타넘 세륨 프라세오디뮴 네오디뮴 프로메튬 사마륨 유로퓸 가돌리늄 터븀 디스프로슘 홀뮴 어븀 툴륨 이터븀 루테튬 하프늄 탄탈럼 텅스텐 레늄 오스뮴 이리듐 백금 금 수은 탈륨 납 비스무트 폴로늄 아스타틴 라돈 프랑슘 라듐 악티늄 토륨 프로트악티늄 우라늄 넵투늄 플루토늄 아메리슘 퀴륨 버클륨 캘리포늄 아인슈타이늄 페르뮴 멘델레븀 노벨륨 로렌슘 러더포듐 더브늄 시보귬 보륨 하슘 마이트너륨 다름슈타튬 뢴트게늄 코페르니슘 니호늄 플레로븀 모스코븀 리버모륨 테네신 오가네손".split(" ");
+const NONMETALS=["H","He","C","N","O","F","Ne","P","S","Cl","Ar","Se","Br","Kr","I","Xe","Rn"];
+const METALLOIDS=["B","Si","Ge","As","Sb","Te"];
+const ELEMENTS = EL_SYMS.map((sym,i)=>{
+  const z=i+1;let row,col;
+  if(z<=2){row=1;col=z===1?1:18;}
+  else if(z<=18){const k=(z-3)%8;row=z<=10?2:3;col=k<2?k+1:k+11;}
+  else if(z<=54){row=z<=36?4:5;col=(z<=36?z-18:z-36);}
+  else if(z>=57&&z<=71){row=9;col=z-57+4;}
+  else if(z>=89&&z<=103){row=10;col=z-89+4;}
+  else{const base=z<=86?54:86;row=z<=86?6:7;const k=z-base;col=k<=2?k:k-14;}
+  return [z,sym,EL_NAMES[i],row,col];
+});
+function elKind(sym,z){if(z>=113)return "unknown";return NONMETALS.includes(sym)?"nonmetal":METALLOIDS.includes(sym)?"metalloid":"metal";}
 const COMPOUNDS = ["물(H₂O)","이산화 탄소(CO₂)","염화 나트륨(NaCl)","수산화 칼륨(KOH)","수산화 나트륨(NaOH)","글리세린","녹말","셀룰로스","젖산","폴리락트산(PLA)","탄산 칼슘(CaCO₃)","리튬 인산철(LiFePO₄)","리튬 코발트 산화물(LiCoO₂)","차아염소산 나트륨(NaClO)","이산화 규소(SiO₂)","이산화 타이타늄(TiO₂)"];
 const SEARCH_TIPS = [["수질 오염","정수 필터 활성탄 성분"],["미세플라스틱","생분해 섬유 라이오셀 원료"],["친환경 세제","식물성 친환경 세제 성분"],["배터리·에너지 저장","전기차 LFP 배터리 성분"],["생분해 소재","PLA 빨대 원료"]];
 const LOGO_SYMS = ["H","C","N","O","Na","Mg","Al","Si","Cl","K","Ca","Fe","Cu","Ag","Au","Li"];
@@ -977,7 +993,11 @@ function areaLabel(){return S.s0.area==="우리 팀만의 아이디어"?(S.s0.cu
 function renderPT(){
   const pt=$("#ptable");let html="";
   for(let g=1;g<=18;g++)html+=`<div class="glabel" style="grid-row:1;grid-column:${g}">${g}</div>`;
-  ELEMENTS.forEach(([z,s,n,p,g])=>{html+=`<button class="el ${S.rd.els.includes(s)?"on":""}" data-el="${s}" style="grid-row:${p+1};grid-column:${g}" aria-pressed="${S.rd.els.includes(s)}"><em>${z}</em><b>${s}</b><small>${n}</small></button>`;});
+  html+=`<div class="fslot" style="grid-row:7;grid-column:3">57~71</div><div class="fslot" style="grid-row:8;grid-column:3">89~103</div>`;
+  html+=`<div class="fgap" style="grid-row:9;grid-column:1/19"></div>`;
+  html+=`<div class="flabel" style="grid-row:10;grid-column:1/4">란타넘족</div><div class="flabel" style="grid-row:11;grid-column:1/4">악티늄족</div>`;
+  ELEMENTS.forEach(([z,s,n,r,c])=>{const on=S.rd.els.includes(s);const gr=r<=7?r+1:r+1;
+    html+=`<button class="el k-${elKind(s,z)} ${on?"on":""}" data-el="${s}" title="${z} ${n}(${s})" style="grid-row:${gr};grid-column:${c}" aria-pressed="${on}"><em>${z}</em><b>${s}</b><small>${n}</small></button>`;});
   pt.innerHTML=html;
 }
 $("#ptable").addEventListener("click",e=>{const b=e.target.closest("[data-el]");if(!b)return;const s=b.dataset.el;
