@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ELEMENT LAB 1차시</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: sticky lab nav bar → one narrow column of "lab sheets", each section a numbered mission card */
+:root{
+  --bg:#eef3f6; --surface:#ffffff; --surface-2:#f5f8fa; --ink:#132339; --muted:#56657a; --line:#d4dde6;
+  --accent:#0d8486; --accent-ink:#ffffff; --accent-soft:#dff2f1; --navy:#16304f; --navy-ink:#ffffff;
+  --signal:#c98a00; --signal-soft:#fff3d6; --ok:#1f8a4c; --ok-soft:#e1f4e8; --bad:#c23b3b; --bad-soft:#fbe6e6;
+  --tile:#16304f; --tile-ink:#ffffff; --shadow:0 1px 2px rgba(19,35,57,.06),0 6px 18px rgba(19,35,57,.06);
+  --paper:#ffffff; --paper-ink:#1b2430; --paper-line:#c9d3dc; --paper-accent:#0d6f71;
+  --f-display:"Do Hyeon","IBM Plex Sans KR","Noto Sans KR","Malgun Gothic",sans-serif;
+  --f-body:"IBM Plex Sans KR","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"Consolas",monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1420; --surface:#132033; --surface-2:#0f1a2a; --ink:#e4ecf4; --muted:#9aabbf; --line:#28394f;
+  --accent:#3cc2c0; --accent-ink:#06201f; --accent-soft:#123a3c; --navy:#1c3a5e; --navy-ink:#ffffff;
+  --signal:#f0b93a; --signal-soft:#3a2f12; --ok:#4cc27d; --ok-soft:#163323; --bad:#ef6b6b; --bad-soft:#3a1a1c;
+  --tile:#2a4d78; --tile-ink:#ffffff; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0c1420; --surface:#132033; --surface-2:#0f1a2a; --ink:#e4ecf4; --muted:#9aabbf; --line:#28394f;
+  --accent:#3cc2c0; --accent-ink:#06201f; --accent-soft:#123a3c; --navy:#1c3a5e; --navy-ink:#ffffff;
+  --signal:#f0b93a; --signal-soft:#3a2f12; --ok:#4cc27d; --ok-soft:#163323; --bad:#ef6b6b; --bad-soft:#3a1a1c;
+  --tile:#2a4d78; --tile-ink:#ffffff; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25); color-scheme:dark;}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--navy)}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;line-height:1.25}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--navy);color:var(--navy-ink);box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.topbar-in{max-width:1080px;margin:0 auto;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));padding-block:8px 6px;display:flex;gap:10px;align-items:center}
+.brand{font-family:var(--f-display);font-size:20px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.brand .sym{font-family:var(--f-mono);font-size:13px;background:var(--accent);color:var(--accent-ink);border-radius:4px;padding:1px 5px}
+.navlist{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;flex:1;min-width:0}
+.navlist button{flex:none;border:0;background:rgba(255,255,255,.08);color:var(--navy-ink);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer;min-height:36px;white-space:nowrap}
+.navlist button:hover{background:rgba(255,255,255,.18)}
+.navlist button.done::after{content:" ✓";color:#7fe0b0;font-weight:700}
+.navlist button.current{background:var(--accent);color:var(--accent-ink)}
+.progress{height:4px;background:rgba(255,255,255,.12)}
+.progress i{display:block;height:100%;width:0;background:var(--signal);transition:width .4s}
+.netbadge{font-size:12px;border-radius:999px;padding:2px 8px;background:rgba(255,255,255,.12);white-space:nowrap}
+.netbadge.off{background:var(--signal);color:#1d1400}
+
+/* page */
+main{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 120px;display:flex;flex-direction:column;gap:22px}
+.hero{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding-block:8px}
+.hero h1{font-size:clamp(28px,4.4vw,42px);color:var(--ink)}
+.hero p{margin:4px 0 0;color:var(--muted)}
+.hero .kicker{font-family:var(--f-mono);font-size:13px;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.tiles{display:flex;gap:8px}
+.tile{width:68px;height:76px;border-radius:8px;background:var(--tile);color:var(--tile-ink);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;font-family:var(--f-mono)}
+.tile b{font-size:28px;line-height:1}
+.tile small{font-size:11px;font-family:var(--f-body);opacity:.85}
+.tile em{position:absolute;top:4px;left:6px;font-style:normal;font-size:11px;opacity:.8}
+
+section.sheet{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);scroll-margin-top:90px;position:relative}
+.sheet-h{display:flex;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.sheet-h .no{font-family:var(--f-mono);font-size:13px;font-weight:600;background:var(--navy);color:var(--navy-ink);border-radius:6px;padding:3px 8px}
+.sheet-h h2{font-size:25px;flex:1;min-width:200px}
+.pill{font-size:13px;border-radius:999px;padding:2px 10px;background:var(--accent-soft);color:var(--accent);white-space:nowrap;font-weight:600}
+.pill.done{background:var(--ok-soft);color:var(--ok)}
+.sheet-b{padding:18px 20px 22px;display:flex;flex-direction:column;gap:18px}
+.lead{margin:0;color:var(--muted)}
+.lead b{color:var(--ink)}
+.locked .sheet-b{opacity:.38;pointer-events:none;filter:saturate(.4)}
+.lockmsg{display:none}
+.locked .lockmsg{display:block;position:absolute;left:50%;top:84px;transform:translateX(-50%);background:var(--navy);color:var(--navy-ink);padding:8px 16px;border-radius:999px;font-size:15px;z-index:2;white-space:nowrap}
+
+.q{display:flex;flex-direction:column;gap:10px}
+.q > .qt{font-weight:600}
+.qt .n{font-family:var(--f-mono);color:var(--accent);margin-right:6px}
+.box{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted);font-weight:500}
+input[type=text],input[type=number],input[type=password],select,textarea{background:var(--surface);border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;min-height:44px;font-size:17px;width:100%}
+textarea{min-height:76px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
+.grid{display:grid;gap:12px}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.btn{border:0;border-radius:9px;padding:10px 18px;min-height:44px;font-weight:600;cursor:pointer;background:var(--accent);color:var(--accent-ink);font-size:16px}
+.btn:hover{filter:brightness(1.07)}
+.btn.ghost{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.navy{background:var(--navy);color:var(--navy-ink)}
+.btn.small{min-height:36px;padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:default;filter:none}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.fb{font-size:15px;border-radius:8px;padding:8px 12px;display:none}
+.fb.ok{display:block;background:var(--ok-soft);color:var(--ok)}
+.fb.bad{display:block;background:var(--bad-soft);color:var(--bad)}
+.fb.hint{display:block;background:var(--signal-soft);color:var(--ink)}
+.tries{font-size:13px;color:var(--muted)}
+
+/* dnd */
+.bank{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;padding:10px;border:2px dashed var(--line);border-radius:10px;background:var(--surface-2)}
+.bank:empty::before{content:"카드를 모두 옮겼어요";color:var(--muted);font-size:14px;align-self:center}
+.card{touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;background:var(--surface);border:1.5px solid var(--navy);color:var(--ink);border-radius:8px;padding:7px 12px;font-size:16px;font-weight:600;min-height:40px;display:inline-flex;align-items:center;box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.card.sel{outline:3px solid var(--signal);outline-offset:1px}
+.card.dragging{opacity:.3}
+.card.wrongc{border-color:var(--bad);background:var(--bad-soft)}
+.drag-ghost{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-50%) rotate(-2deg);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:120px;min-height:46px;border:2px dashed var(--accent);border-radius:9px;padding:3px;vertical-align:middle;background:var(--accent-soft);margin:2px 2px}
+.slot.hover,.bin.hover{background:var(--signal-soft);border-color:var(--signal)}
+.slot.wrong,.bin.wrong{border-color:var(--bad);animation:shake .4s}
+.slot.right{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.slot .card{margin:0}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.locked-dnd .card{cursor:default}
+.bins{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bin{border:2px dashed var(--accent);border-radius:12px;min-height:150px;padding:10px;background:var(--accent-soft);display:flex;flex-direction:column;gap:8px}
+.bin h4{margin:0;font-family:var(--f-display);font-weight:400;font-size:20px}
+.bin .in{display:flex;flex-wrap:wrap;gap:8px}
+.bin.right{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.sentence{line-height:2.6}
+
+/* roadmap */
+.roadmap{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+.rm{flex:none;width:168px;height:170px;perspective:800px;scroll-snap-align:start;cursor:pointer;border:0;background:none;padding:0;text-align:left}
+.rm .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.rm.flip .in{transform:rotateY(180deg)}
+.rm .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;border:1.5px solid var(--line);background:var(--surface)}
+.rm .back{transform:rotateY(180deg);background:var(--navy);color:var(--navy-ink);border-color:var(--navy);font-size:14px;line-height:1.45}
+.rm .st{font-family:var(--f-mono);font-weight:600;color:var(--accent);font-size:14px}
+.rm .nm{font-family:var(--f-display);font-size:19px;line-height:1.2}
+.rm .tap{margin-top:auto;font-size:12px;color:var(--muted)}
+.rm.today .front{border-color:var(--signal);background:var(--signal-soft)}
+.today-badge{align-self:flex-start;font-family:var(--f-mono);font-size:11px;font-weight:600;background:var(--signal);color:#1d1400;border-radius:4px;padding:1px 6px}
+.matchgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.matchgrid .mrow{display:flex;align-items:center;gap:8px;background:var(--surface-2);border-radius:9px;padding:6px 8px;border:1px solid var(--line)}
+.matchgrid .mrow b{font-family:var(--f-mono);font-size:14px;width:56px;flex:none}
+.matchgrid .slot{flex:1;min-width:0}
+
+.brief{background:var(--navy);color:var(--navy-ink);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden}
+.brief .stamp{position:absolute;right:14px;top:12px;border:2px solid #ff8a8a;color:#ff8a8a;font-family:var(--f-mono);font-weight:600;padding:2px 8px;transform:rotate(6deg);font-size:13px;letter-spacing:.1em}
+.brief h3{font-size:24px;margin-bottom:8px;color:var(--navy-ink)}
+.brief p{margin:0;max-width:62ch}
+
+/* choice cards */
+.choices{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.choice{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:120px}
+.choice:hover{border-color:var(--accent)}
+.choice.on{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 2px var(--accent) inset}
+.choice .ic{width:36px;height:36px;color:var(--accent)}
+.choice b{font-size:17px}
+.choice span{font-size:14px;color:var(--muted);line-height:1.45}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;text-align:left;cursor:pointer;min-height:44px}
+.opt.on{border-color:var(--accent);background:var(--accent-soft)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opts.inline{flex-direction:row;flex-wrap:wrap}
+
+.defn{background:var(--signal-soft);border-radius:12px;padding:14px 18px;font-size:19px;line-height:1.7;font-weight:500}
+.defn input{display:inline-block;width:min(320px,100%);margin:4px 0}
+
+/* roles */
+.roles{width:100%;border-collapse:collapse}
+.roles th,.roles td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:middle}
+.roles th{font-size:14px;color:var(--muted);font-weight:600}
+.roles td.r{font-weight:700;white-space:nowrap}
+.roles input[type=radio]{width:22px;height:22px;accent-color:var(--accent)}
+.tablewrap{overflow-x:auto}
+
+/* canvas */
+.logo-wrap{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:14px}
+.canvas-box{border:2px solid var(--line);border-radius:12px;background:#ffffff;overflow:hidden;touch-action:none;aspect-ratio:8/5;max-width:100%}
+.canvas-box canvas{width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+.tools{display:flex;flex-direction:column;gap:10px}
+.swatches{display:flex;gap:6px;flex-wrap:wrap}
+.sw{width:32px;height:32px;border-radius:50%;border:3px solid transparent;cursor:pointer}
+.sw.on{border-color:var(--ink)}
+.sizes{display:flex;gap:6px}
+.sizes button{flex:1}
+.toolbtn.on{background:var(--navy);color:var(--navy-ink);border-color:var(--navy)}
+.symgrid{display:flex;flex-wrap:wrap;gap:5px}
+.symgrid button{font-family:var(--f-mono);font-weight:600;width:42px;height:40px;border-radius:6px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer}
+.symgrid button.on{background:var(--tile);color:var(--tile-ink);border-color:var(--tile)}
+
+/* svg apparatus */
+.app svg{width:100%;height:auto;max-width:720px;display:block;margin:0 auto}
+.app svg text{font-family:var(--f-body);font-size:15px;fill:var(--ink);font-weight:600}
+.summary{border-left:5px solid var(--accent);background:var(--surface-2);padding:12px 16px;border-radius:0 10px 10px 0}
+.summary b{font-family:var(--f-display);font-weight:400;font-size:18px;display:block;margin-bottom:2px}
+.chain{display:flex;flex-direction:column;gap:6px}
+.chain .crow{display:flex;align-items:center;gap:8px}
+.chain .crow b{font-family:var(--f-mono);color:var(--accent);width:22px}
+.chain .slot{flex:1;justify-content:flex-start}
+.kw{display:flex;flex-wrap:wrap;gap:6px}
+.kw span{font-size:14px;border-radius:999px;padding:2px 10px;background:var(--surface-2);border:1px solid var(--line)}
+.kw span.hit{background:var(--ok-soft);color:var(--ok);border-color:var(--ok)}
+
+/* R&D table + periodic */
+.rd{width:100%;border-collapse:collapse;min-width:720px}
+.rd th,.rd td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left;font-size:15px}
+.rd th{background:var(--navy);color:var(--navy-ink);font-weight:600}
+.rd tr.ex td{color:var(--muted);background:var(--surface-2)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;min-height:30px}
+.chip{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 10px;font-size:14px;font-weight:600;border:0;cursor:pointer}
+.chip.on{background:var(--accent);color:var(--accent-ink)}
+.ptable{display:grid;grid-template-columns:repeat(18,minmax(36px,1fr));gap:3px;min-width:690px}
+.el{border:1.5px solid var(--line);background:var(--surface);border-radius:5px;padding:2px 0 3px;text-align:center;cursor:pointer;line-height:1.1;min-height:44px}
+.el em{display:block;font-style:normal;font-size:10px;color:var(--muted);font-family:var(--f-mono)}
+.el b{font-family:var(--f-mono);font-size:16px}
+.el small{display:block;font-size:10px;color:var(--muted)}
+.el.on{background:var(--tile);border-color:var(--tile)}
+.el.on b,.el.on em,.el.on small{color:var(--tile-ink)}
+.glabel{font-family:var(--f-mono);font-size:11px;color:var(--muted);text-align:center;align-self:end}
+
+/* report */
+.report-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:12px}
+#report{width:794px;margin:0 auto;background:var(--paper);color:var(--paper-ink);padding:40px 46px;font-size:13.5px;line-height:1.6;font-family:var(--f-body)}
+#report h3{font-family:var(--f-display);font-size:26px;color:var(--paper-accent);margin:0}
+#report h4{font-size:15px;margin:16px 0 6px;color:var(--paper-accent);border-bottom:1.5px solid var(--paper-accent);padding-bottom:2px}
+#report table{width:100%;border-collapse:collapse;margin:4px 0}
+#report td,#report th{border:1px solid var(--paper-line);padding:5px 7px;vertical-align:top;text-align:left}
+#report th{background:#eef4f6;width:150px;font-weight:600}
+#report .meta{display:flex;justify-content:space-between;border-bottom:2px solid var(--paper-ink);padding-bottom:8px;margin-bottom:6px}
+#report img.logo{max-width:220px;border:1px solid var(--paper-line);border-radius:6px}
+#report .ok{color:#1f7a44;font-weight:600}
+#report .no{color:#b03030;font-weight:600}
+.exports{display:flex;gap:10px;flex-wrap:wrap}
+@media print{@page{size:A4;margin:10mm}body{background:#fff}body::before,.topbar,.hero,#storageWarn,.savebadge,.modal,main>section:not(#sec-out),#sec-out>.sheet-h,#sec-out .lead,#sec-out .exports,#sec-out .fb,.teacher-link{display:none!important}main,#sec-out .sheet-b{padding:0}#sec-out{border:0;box-shadow:none;background:none}.report-scroll{border:0;padding:0;overflow:visible;background:none}#report{width:100%;padding:0}#report tr{break-inside:avoid}#report h4{break-after:avoid}}
+.note{font-size:14px;color:var(--muted)}
+
+.savebadge{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));background:var(--navy);color:var(--navy-ink);font-size:13px;border-radius:999px;padding:6px 14px;z-index:40;box-shadow:var(--shadow)}
+.modal{position:fixed;inset:0;background:rgba(10,18,30,.55);z-index:90;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-card{background:var(--surface);color:var(--ink);border-radius:14px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
+.modal-card img{max-width:100%;border:1px solid var(--line)}
+.teacher-link{text-align:center;font-size:13px}
+.teacher-link button{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer}
+.answers{font-size:15px}
+.answers li{margin-bottom:4px}
+.warnbar{background:var(--signal-soft);color:var(--ink);border:1px solid var(--signal);border-radius:10px;padding:10px 14px;font-size:15px}
+
+@media (max-width:760px){
+  .g5{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3,.g2,.bins{grid-template-columns:1fr}
+  .logo-wrap{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
+  .brand .txt{display:none}
+  .sheet-h,.sheet-b{padding-left:14px;padding-right:14px}
+}
+</style>
+
+</head>
+<body>
+<div class="topbar" id="topbar">
+  <div class="topbar-in">
+    <div class="brand"><span class="sym">El</span><span class="txt">ELEMENT LAB</span></div>
+    <nav class="navlist" id="nav" aria-label="활동 바로가기">
+      <button data-go="sec-info">학생 정보</button>
+      <button data-go="sec-g1">안내 1 연구소</button>
+      <button data-go="sec-g2">안내 2 브리핑</button>
+      <button data-go="sec-s0">Step 0 문제</button>
+      <button data-go="sec-s1">Step 1 개념</button>
+      <button data-go="sec-lav">라부아지에</button>
+      <button data-go="sec-rd">R&amp;D 미션</button>
+      <button data-go="sec-out">저장·제출</button>
+    </nav>
+    <span class="netbadge" id="net">온라인</span>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+</div>
+
+<main>
+  <header class="hero">
+    <div>
+      <div class="kicker">2학년 과학 · Ⅳ. 물질의 구성 · 01 원소와 화합물</div>
+      <h1>ELEMENT LAB<br>세상을 바꿀 신소재 스타트업 프로젝트</h1>
+      <p>1차시 · 연구소 설립부터 첫 R&amp;D 미션까지 · 정화중학교</p>
+    </div>
+    <div class="tiles" aria-hidden="true">
+      <div class="tile"><em>1</em><b>H</b><small>수소</small></div>
+      <div class="tile"><em>8</em><b>O</b><small>산소</small></div>
+    </div>
+  </header>
+
+  <div class="warnbar" id="storageWarn" hidden>이 화면에서는 자동 저장이 막혀 있어요. 활동이 끝나면 맨 아래에서 결과지를 꼭 저장하세요.</div>
+
+  <!-- 학생 정보 -->
+  <section class="sheet" id="sec-info">
+    <div class="sheet-h"><span class="no">ID</span><h2>연구원 등록</h2><span class="pill" id="pill-info">1분</span></div>
+    <div class="sheet-b">
+      <p class="lead">학년, 반, 번호, 이름, 모둠을 입력하고 <b>연구 시작</b>을 누르면 아래 활동이 열립니다. 같은 크롬북을 다른 친구가 써도 기록이 섞이지 않아요.</p>
+      <div class="grid g5">
+        <label class="f">학년<select id="i-grade" data-bind="info.grade"><option value="2">2학년</option></select></label>
+        <label class="f">반<select id="i-cls" data-bind="info.cls"><option value="">선택</option></select></label>
+        <label class="f">번호<input id="i-num" type="number" min="1" max="40" inputmode="numeric" data-bind="info.num" placeholder="예: 7"></label>
+        <label class="f">이름<input id="i-name" type="text" data-bind="info.name" placeholder="이름" autocomplete="off"></label>
+        <label class="f">모둠<select id="i-team" data-bind="info.team"><option value="">선택</option></select></label>
+      </div>
+      <div class="row">
+        <button class="btn" id="startBtn">연구 시작</button>
+        <span class="note" id="infoMsg"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 안내 1 -->
+  <section class="sheet gated" id="sec-g1">
+    <div class="lockmsg">연구원 등록을 먼저 해 주세요</div>
+    <div class="sheet-h"><span class="no">안내 1</span><h2>신소재 연구소를 설립하자!</h2><span class="pill" id="pill-g1">7분 · 모둠</span></div>
+    <div class="sheet-b">
+      <p class="lead">모둠원과 의논해서 <b>같은 연구소 이름과 슬로건</b>을 정하고, 각자 화면에 입력하세요.</p>
+      <div class="grid g2">
+        <label class="f">연구소 이름<input id="lab-name" type="text" data-bind="lab.name" placeholder="예: 그린버블 랩" maxlength="30"></label>
+        <label class="f">한 줄 슬로건<input id="lab-slogan" type="text" data-bind="lab.slogan" placeholder="예: 거품은 깨끗하게, 하천은 더 깨끗하게" maxlength="60"></label>
+      </div>
+
+      <div class="q">
+        <div class="qt">로고 스케치</div>
+        <div class="logo-wrap">
+          <div class="canvas-box"><canvas id="cv" width="800" height="500" aria-label="로고 그리기 판"></canvas></div>
+          <div class="tools">
+            <div class="row" role="group" aria-label="도구">
+              <button class="btn ghost small toolbtn on" data-tool="pen">펜</button>
+              <button class="btn ghost small toolbtn" data-tool="eraser">지우개</button>
+            </div>
+            <div class="swatches" id="swatches"></div>
+            <div class="sizes"><button class="btn ghost small" data-size="4">가늘게</button><button class="btn ghost small on toolbtn" data-size="9">보통</button><button class="btn ghost small" data-size="18">굵게</button></div>
+            <div class="row"><button class="btn ghost small" id="undoBtn">되돌리기</button><button class="btn ghost small" id="clearBtn">전체 지우기</button></div>
+            <details>
+              <summary style="cursor:pointer;font-weight:600">원소 타일로 로고 만들기</summary>
+              <p class="note" style="margin:6px 0">원소 기호를 최대 3개 고르면 로고가 그려져요.</p>
+              <div class="symgrid" id="symgrid"></div>
+              <button class="btn small" id="tileLogoBtn" style="margin-top:8px">타일 로고 그리기</button>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="q">
+        <div class="qt">역할 분담표 <span class="note">— 모둠원 이름을 쓰고, 내가 맡은 역할에 체크하세요.</span></div>
+        <div class="tablewrap">
+          <table class="roles">
+            <thead><tr><th>내 역할</th><th>역할</th><th>이름</th><th>하는 일</th></tr></thead>
+            <tbody id="rolesBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="fb" id="fb-g1"></div>
+    </div>
+  </section>
+
+  <!-- 안내 2 -->
+  <section class="sheet gated" id="sec-g2">
+    <div class="lockmsg">연구원 등록을 먼저 해 주세요</div>
+    <div class="sheet-h"><span class="no">안내 2</span><h2>MISSION BRIEFING</h2><span class="pill" id="pill-g2">5분</span></div>
+    <div class="sheet-b">
+      <div class="brief">
+        <span class="stamp">CONFIDENTIAL</span>
+        <h3 id="briefTitle">R&amp;D팀 브리핑</h3>
+        <p>탈레스는 “만물의 근원은 물이다”라는 질문 하나로 화학의 역사를 열었고, 라부아지에와 돌턴은 원소와 원자 개념을 정립해 세상을 바꿨습니다. 여러분이 읽은 &lt;세상을 바꾼 화학&gt; 이야기는 여기서 끝나지 않습니다. 오늘부터 여러분은 신소재 연구소의 R&amp;D팀입니다. 원소·원자·분자·이온을 배우며 실제 사회 문제를 해결할 제품을 개발하고, 마지막 시간에는 투자자 앞에서 발표합니다.</p>
+        <div class="row" style="margin-top:12px"><button class="btn" id="briefBtn">브리핑 확인</button><span id="briefOk" class="note" style="color:#bfe9df"></span></div>
+      </div>
+      <div class="q">
+        <div class="qt">R&amp;D 로드맵 한눈에 보기 <span class="note">— 카드를 눌러 단계별 미션을 확인하세요.</span></div>
+        <div class="roadmap" id="roadmap"></div>
+      </div>
+      <div class="q" id="q-roadmap">
+        <div class="qt"><span class="n">CHECK</span>각 단계에서 배울 핵심 개념을 알맞은 칸으로 옮겨 보세요.</div>
+        <div class="bank" data-bank></div>
+        <div class="matchgrid" id="matchgrid"></div>
+        <div class="row"><button class="btn" data-check="roadmap">확인</button><button class="btn ghost small" data-hint="roadmap" hidden>힌트</button><span class="tries" data-tries="roadmap"></span></div>
+        <div class="fb" data-fb="roadmap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 0 -->
+  <section class="sheet gated" id="sec-s0">
+    <div class="lockmsg">연구원 등록을 먼저 해 주세요</div>
+    <div class="sheet-h"><span class="no">Step 0</span><h2>어떤 문제를 해결할까?</h2><span class="pill" id="pill-s0">8분 · 모둠</span></div>
+    <div class="sheet-b">
+      <p class="lead">우리 연구소가 세상에 내놓을 신소재는, 실제로 누군가에게 필요한 문제에서 출발합니다.</p>
+      <div class="q">
+        <div class="qt"><span class="n">1</span>팀 문제 선택 — 도전할 문제 영역 하나를 고르세요.</div>
+        <div class="choices" id="areas"></div>
+        <label class="f" id="customWrap" hidden>우리 팀만의 아이디어<input id="area-custom" type="text" data-bind="s0.custom" placeholder="예: 교실 미세먼지"></label>
+      </div>
+      <div class="q">
+        <div class="qt"><span class="n">2</span>팀 토론 질문 — 의논한 내용을 짧게 적어요.</div>
+        <label class="f">이 문제는 우리 학교·동네·가정에서 실제로 어떤 모습으로 나타나나요?<textarea id="s0-q1" data-bind="s0.q1" rows="2"></textarea></label>
+        <label class="f">이 문제를 해결하면 누가, 어떻게 더 나아질까요?<textarea id="s0-q2" data-bind="s0.q2" rows="2"></textarea></label>
+        <label class="f">이 문제를 해결하려면 어떤 물질(원소·화합물) 지식이 필요할 것 같나요?<textarea id="s0-q3" data-bind="s0.q3" rows="2"></textarea></label>
+      </div>
+      <div class="q">
+        <div class="qt"><span class="n">3</span>선택한 문제 정의문 완성하기</div>
+        <div class="defn">우리는 <input id="def-area" type="text" data-bind="s0.defArea" placeholder="문제"> 문제를 해결하기 위해, <input id="def-product" type="text" data-bind="s0.product" placeholder="개발할 제품"> 를 개발하는 <input id="def-lab" type="text" data-bind="s0.defLab" placeholder="연구소 이름"> 연구소입니다.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Step 1 concepts -->
+  <section class="sheet gated" id="sec-s1">
+    <div class="lockmsg">연구원 등록을 먼저 해 주세요</div>
+    <div class="sheet-h"><span class="no">Step 1</span><h2>우리 제품의 재료, 원소와 화합물이란?</h2><span class="pill" id="pill-s1">8분</span></div>
+    <div class="sheet-b">
+      <p class="lead">신소재를 설계하려면 가장 작은 성분 단위부터 화합물까지 알아야 합니다.</p>
+      <div class="q" id="q-blanks">
+        <div class="qt"><span class="n">A</span>낱말 카드를 빈칸으로 옮겨 개념을 완성하세요.</div>
+        <div class="bank" data-bank></div>
+        <div class="box sentence">
+          <div><b>1. 원소:</b> 더 이상 다른 물질로 <span class="slot" data-zone="b1"></span>되지 않으면서 물질을 이루는 기본 성분</div>
+          <div style="padding-left:18px">· 원소는 어떠한 방법으로도 두 종류 이상의 물질로 나눌 수 없다.</div>
+          <div style="padding-left:18px">· 물질을 이루는 기본 성분으로 그 <span class="slot" data-zone="b2"></span>에 따라 성질이 다르다.</div>
+          <div><b>3. 화합물:</b> 물과 같이 <span class="slot" data-zone="b3"></span> 이상의 입자로 이루어진 물질</div>
+          <div style="padding-left:18px">· 서로 다른 원소가 결합하여 생성된 새로운 물질로, 성분 원소의 성질과는 전혀 다른 새로운 성질을 가진다.</div>
+          <div style="padding-left:18px">· 화합물은 화학적인 방법을 통해 다시 <span class="slot" data-zone="b4" style="min-width:220px"></span>.</div>
+          <div style="padding-left:18px">· 원소가 결합하여 다양한 화합물을 형성하므로 화합물은 원소보다 종류가 많다.</div>
+        </div>
+        <div class="row"><button class="btn" data-check="blanks">확인</button><button class="btn ghost small" data-hint="blanks" hidden>힌트</button><span class="tries" data-tries="blanks"></span></div>
+        <div class="fb" data-fb="blanks"></div>
+      </div>
+      <div class="q">
+        <div class="qt"><span class="n">B</span>2. 원소의 종류</div>
+        <div class="box row">자연에서 발견된 원소 약 90여 가지 + 인공적으로 만들어진 원소 약 20여 가지 → 오늘날 알려진 원소는 총
+          <input id="count" type="number" inputmode="numeric" data-bind="s1.count" style="width:110px" placeholder="?"> 가지
+          <button class="btn small" data-check="count">확인</button><button class="btn ghost small" data-hint="count" hidden>힌트</button><span class="tries" data-tries="count"></span></div>
+        <div class="fb" data-fb="count"></div>
+      </div>
+      <div class="q" id="q-sort">
+        <div class="qt"><span class="n">C</span>물질 카드를 원소와 화합물로 분류하세요.</div>
+        <div class="bank" data-bank></div>
+        <div class="bins">
+          <div class="bin" data-zone="el" data-multi><h4>원소</h4><div class="in"></div></div>
+          <div class="bin" data-zone="cp" data-multi><h4>화합물</h4><div class="in"></div></div>
+        </div>
+        <div class="row"><button class="btn" data-check="sort">확인</button><button class="btn ghost small" data-hint="sort" hidden>힌트</button><span class="tries" data-tries="sort"></span></div>
+        <div class="fb" data-fb="sort"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lavoisier -->
+  <section class="sheet gated" id="sec-lav">
+    <div class="lockmsg">연구원 등록을 먼저 해 주세요</div>
+    <div class="sheet-h"><span class="no">Step 1 · R&amp;D</span><h2>라부아지에의 질문</h2><span class="pill" id="pill-lav">10분</span></div>
+    <div class="sheet-b">
+      <p class="lead">우리 연구소가 원소를 고르기 전에 먼저 확인할 것이 있습니다. 그 물질이 정말 원소인지, 아니면 더 나눌 수 있는 화합물인지!</p>
+      <div class="q">
+        <div class="qt">근대 과학자 라부아지에는 (&nbsp;&nbsp;?&nbsp;&nbsp;)을 분해하는 실험으로 이 질문에 답했습니다.</div>
+        <div class="opts inline" data-opt="q0"></div>
+        <div class="row"><button class="btn small" data-check="q0">확인</button><span class="tries" data-tries="q0"></span></div>
+        <div class="fb" data-fb="q0"></div>
+      </div>
+      <div class="app box" aria-label="라부아지에의 물 분해 실험 장치">
+        <svg viewBox="0 0 760 300" role="img" aria-label="물 주전자에서 나온 물이 벽화로 속 주철관을 지나 냉각수를 거쳐 집기병에 수소로 모이는 장치">
+          <rect x="0" y="0" width="760" height="300" fill="none"/>
+          <!-- kettle -->
+          <path d="M40 150 q0-40 45-40 q45 0 45 40 v40 h-90z" fill="var(--accent-soft)" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="70" y="100" width="30" height="12" rx="3" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+          <path d="M130 160 l40 -18" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/>
+          <text x="58" y="218">물</text>
+          <!-- furnace -->
+          <rect x="190" y="120" width="250" height="110" fill="var(--signal-soft)" stroke="var(--ink)" stroke-width="2"/>
+          <g stroke="var(--line)" stroke-width="1.5">
+            <line x1="190" y1="150" x2="440" y2="150"/><line x1="190" y1="180" x2="440" y2="180"/><line x1="190" y1="210" x2="440" y2="210"/>
+            <line x1="240" y1="120" x2="240" y2="150"/><line x1="320" y1="120" x2="320" y2="150"/><line x1="400" y1="120" x2="400" y2="150"/>
+            <line x1="280" y1="180" x2="280" y2="210"/><line x1="360" y1="180" x2="360" y2="210"/>
+          </g>
+          <path d="M215 115 q10-22 20 0 q10-22 20 0 M300 115 q10-22 20 0 q10-22 20 0 M385 115 q10-22 20 0" fill="none" stroke="var(--bad)" stroke-width="2.5"/>
+          <rect x="165" y="134" width="300" height="14" rx="7" fill="var(--muted)" stroke="var(--ink)" stroke-width="2"/>
+          <text x="260" y="250">벽화로</text>
+          <text x="282" y="103" style="fill:var(--bad)">뜨겁게 가열</text>
+          <text x="196" y="170">주철관</text>
+          <!-- condenser -->
+          <rect x="480" y="120" width="80" height="120" rx="10" fill="var(--accent-soft)" stroke="var(--ink)" stroke-width="2"/>
+          <path d="M465 141 h25 q20 0 20 12 q0 12 -20 12 q-20 0 -20 12 q0 12 20 12 q20 0 20 12 q0 12-20 12 q-20 0 -20 12 h80" fill="none" stroke="var(--ink)" stroke-width="3"/>
+          <text x="488" y="262">냉각수</text>
+          <!-- collection -->
+          <path d="M550 228 h60 v-40" fill="none" stroke="var(--ink)" stroke-width="3"/>
+          <rect x="590" y="200" width="140" height="70" fill="var(--accent-soft)" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="626" y="90" width="58" height="140" rx="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="628" y="92" width="54" height="80" rx="6" fill="var(--signal-soft)"/>
+          <text x="638" y="135">수소</text>
+          <text x="620" y="290">물을 채운 수조</text>
+        </svg>
+      </div>
+      <div class="summary"><b>실험 결과 요약</b>뜨겁게 가열된 주철관 속으로 물을 통과시켰더니, 주철관 내부가 녹슬고 주철관 전체의 질량이 증가하였다. 또한, 냉각수를 통과한 집기병에는 수소 기체가 모였다.</div>
+
+      <div class="q">
+        <div class="qt"><span class="n">1</span>냉각수를 통과하여 집기병에 모인 기체의 이름과 주철관 내부에서 일어난 변화(생성물)를 각각 고르시오.</div>
+        <div class="box q">
+          <div>· 기체 이름</div>
+          <div class="opts inline" data-opt="gas"></div>
+          <div>· 주철관 내부의 변화</div>
+          <div class="opts" data-opt="change"></div>
+        </div>
+        <div class="row"><button class="btn" data-check="q1">확인</button><button class="btn ghost small" data-hint="q1" hidden>힌트</button><span class="tries" data-tries="q1"></span></div>
+        <div class="fb" data-fb="q1"></div>
+      </div>
+
+      <div class="q" id="q-order">
+        <div class="qt"><span class="n">2</span>주철관 전체의 질량이 증가한 까닭을 산소의 이동과 관련하여 설명해 봅시다. 먼저 카드를 일어난 순서대로 놓아 보세요.</div>
+        <div class="bank" data-bank></div>
+        <div class="chain" id="chain"></div>
+        <div class="row"><button class="btn" data-check="order">확인</button><button class="btn ghost small" data-hint="order" hidden>힌트</button><span class="tries" data-tries="order"></span></div>
+        <div class="fb" data-fb="order"></div>
+        <label class="f" id="q2wrap" hidden>순서를 바탕으로 완성한 내 설명 (다듬어도 좋아요)<textarea id="lav-q2" data-bind="lav.q2" rows="3"></textarea></label>
+      </div>
+
+      <div class="q">
+        <div class="qt"><span class="n">3</span>위 실험 결과와 물의 성질을 근거로 할 때, 아리스토텔레스의 ‘4원소설’이 틀렸음을 서술하시오.</div>
+        <textarea id="lav-q3" data-bind="lav.q3" rows="4" placeholder="4원소설은 물을 … 라고 보았다. 그러나 …"></textarea>
+        <div class="row"><button class="btn ghost small" id="kwBtn">키워드 점검</button><span class="note">채점이 아니라 내 답에 빠진 내용이 없는지 확인하는 기능이에요.</span></div>
+        <div class="kw" id="kw" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- R&D -->
+  <section class="sheet gated" id="sec-rd">
+    <div class="lockmsg">연구원 등록을 먼저 해 주세요</div>
+    <div class="sheet-h"><span class="no">Step 1 · R&amp;D</span><h2>우리 제품의 핵심 원소와 화합물 찾기</h2><span class="pill" id="pill-rd">7분 · 모둠</span></div>
+    <div class="sheet-b">
+      <div class="tablewrap">
+        <table class="rd">
+          <thead><tr><th style="width:70px">모둠</th><th style="width:130px">선택한 문제 영역</th><th style="width:170px">신소재 아이디어 제품명</th><th>사용 원소</th><th>사용 화합물</th></tr></thead>
+          <tbody>
+            <tr class="ex"><td>예시) 1모둠</td><td>친환경 세제</td><td>콩기름 추출 생분해성 액체 세제</td><td>탄소(C), 수소(H), 산소(O), 칼륨(K)</td><td>수산화 칼륨(KOH), 글리세린</td></tr>
+            <tr><td id="rd-team">–</td><td id="rd-area">–</td><td><input id="rd-product" type="text" data-bind="rd.product" placeholder="제품명"></td><td><div class="chips" id="rd-els"></div></td><td><div class="chips" id="rd-cps"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="q">
+        <div class="qt">사용 원소 고르기 <span class="note">— 주기율표 타일을 누르면 추가되고, 다시 누르면 빠져요.</span></div>
+        <div class="tablewrap"><div class="ptable" id="ptable"></div></div>
+      </div>
+      <div class="q">
+        <div class="qt">사용 화합물 고르기</div>
+        <div class="chips" id="cpchoices"></div>
+        <div class="row" style="max-width:520px"><input id="cp-custom" type="text" placeholder="목록에 없는 화합물 직접 입력 (예: 녹말)" style="flex:1"><button class="btn small" id="cpAdd">추가</button></div>
+      </div>
+      <label class="f">오늘의 마무리 — 우리 연구소가 다음 시간에 확인하고 싶은 것은?<textarea id="rd-next" data-bind="rd.next" rows="2"></textarea></label>
+    </div>
+  </section>
+
+  <!-- output -->
+  <section class="sheet" id="sec-out">
+    <div class="sheet-h"><span class="no">OUT</span><h2>저장·제출</h2><span class="pill">2분</span></div>
+    <div class="sheet-b">
+      <p class="lead">아래 결과지는 내가 입력한 내용으로 자동으로 만들어져요. <b>PDF로 저장</b>해서 선생님이 안내한 곳(클래스룸 등)에 제출하세요. <span id="printNote">인쇄가 필요하면 저장한 PDF를 열어 인쇄하면 됩니다.</span></p>
+      <div class="exports">
+        <button class="btn" id="pdfBtn">PDF로 저장</button>
+        <button class="btn navy" id="pngBtn">이미지로 저장</button>
+        <button class="btn navy" id="printBtn" hidden>인쇄하기</button>
+        <button class="btn ghost" id="jsonBtn">기록 파일 백업</button>
+        <label class="btn ghost" style="display:inline-flex;align-items:center">기록 불러오기<input type="file" id="jsonIn" accept=".json,application/json" hidden></label>
+        <button class="btn ghost" id="resetBtn">다른 학생으로 새로 시작</button>
+      </div>
+      <div class="fb" id="exportMsg"></div>
+      <div class="report-scroll"><div id="report"></div></div>
+      <div class="teacher-link"><button id="teacherBtn">교사용</button></div>
+    </div>
+  </section>
+</main>
+
+<div class="savebadge" id="saveBadge">자동 저장 대기 중</div>
+<div class="modal" id="modal" hidden><div class="modal-card" id="modalCard"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+"use strict";
+const TEACHER_PW = "1234";
+const SCHOOL = "정화중학교";
+const LESSON = "ELEMENT LAB 1차시";
+const PREFIX = "elementlab-1:";
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- data ---------- */
+const ROLES = [
+  ["연구원","자료 조사와 연구 노트 기록"],
+  ["화학식 디자이너","원소 기호·화학식·모형 담당"],
+  ["실험 담당","실험 준비, 안전 관리, 결과 정리"],
+  ["발표·마케팅 담당","피치 자료 만들기와 발표"]
+];
+const ROADMAP = [
+  ["Step 0","킥오프","연구소 설립 + 해결할 문제 정하기"],
+  ["Step 1","원소 및 소재 탐색","우리 제품의 핵심 원소와 화합물 찾아보기"],
+  ["Step 2","원소 기호와 화학식 설계","원소들을 조합하여 제품의 화학식 완성하기"],
+  ["Step 3","원소 구성 입자 분석","원소를 이루는 입자(원자) 파악하기"],
+  ["Step 4","주기율표 활용","원소 주기율표에서 대체 원소 후보 찾기"],
+  ["Step 5","원자 및 분자 구조 설계","원자 구조(원자핵·전자)를 모형화하고, 원자를 결합하여 분자 구조 설계하기"],
+  ["Step 6","이온 형성 및 전하 분석","제품이 물에 녹으면 어떤 이온이 생기나?"],
+  ["Step 7","구동 원리 검증","전하를 띤 이온의 이동을 통한 전류 흐름 및 성능 검증하기"],
+  ["Final","최종 피치데이","투자설명회에서 시제품 발표하기"]
+];
+const CONCEPTS = ["원소와 화합물","원소 기호와 화학식","원소를 구성하는 입자","주기율표","원자, 분자","이온","이온의 이동"];
+const AREAS = [
+  ["수질 오염","하천·바다에 쌓이는 오염 물질, 우리가 마시는 물의 안전성",'<path d="M18 4c5 7 9 12 9 17a9 9 0 0 1-18 0c0-5 4-10 9-17z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M13 22a5 5 0 0 0 5 5" stroke="currentColor" stroke-width="2" fill="none"/>'],
+  ["미세플라스틱","세탁할 때 옷에서 빠져나오는 미세섬유, 화장품 속 미세 알갱이",'<circle cx="9" cy="10" r="3" fill="currentColor"/><circle cx="22" cy="8" r="2" fill="currentColor"/><circle cx="16" cy="18" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="27" cy="22" r="2.5" fill="currentColor"/><circle cx="8" cy="27" r="2" fill="currentColor"/>'],
+  ["친환경 세제","합성 세제 대신 자연 분해되는 세제 (예: EM 세제)",'<circle cx="13" cy="20" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><circle cx="25" cy="11" r="5" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="27" cy="25" r="3" fill="none" stroke="currentColor" stroke-width="2"/>'],
+  ["배터리·에너지 저장","스마트폰·전기차 배터리의 수명과 폐배터리 환경 문제",'<rect x="6" y="10" width="22" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.4"/><rect x="28" y="15" width="3" height="6" fill="currentColor"/><path d="M18 12l-5 7h5l-2 6 6-8h-5z" fill="currentColor"/>'],
+  ["생분해 소재","썩는 플라스틱, 친환경 포장재, 친환경 PLA 빨대",'<path d="M7 28C7 14 16 7 30 6c0 14-8 22-21 22z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M7 28L21 15" stroke="currentColor" stroke-width="2"/>'],
+  ["우리 팀만의 아이디어","위 목록에 없다면 팀이 직접 제안해 보기",'<path d="M18 4a9 9 0 0 0-5 16.5V25h10v-4.5A9 9 0 0 0 18 4z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M14 29h8" stroke="currentColor" stroke-width="2.4"/>']
+];
+// periodic tiles: [Z, symbol, name, period(row), group(col)]
+const ELEMENTS = [
+  [1,"H","수소",1,1],[2,"He","헬륨",1,18],
+  [3,"Li","리튬",2,1],[4,"Be","베릴륨",2,2],[5,"B","붕소",2,13],[6,"C","탄소",2,14],[7,"N","질소",2,15],[8,"O","산소",2,16],[9,"F","플루오린",2,17],[10,"Ne","네온",2,18],
+  [11,"Na","나트륨",3,1],[12,"Mg","마그네슘",3,2],[13,"Al","알루미늄",3,13],[14,"Si","규소",3,14],[15,"P","인",3,15],[16,"S","황",3,16],[17,"Cl","염소",3,17],[18,"Ar","아르곤",3,18],
+  [19,"K","칼륨",4,1],[20,"Ca","칼슘",4,2],[26,"Fe","철",4,8],[29,"Cu","구리",4,11],[30,"Zn","아연",4,12],
+  [47,"Ag","은",5,11],[53,"I","아이오딘",5,17],
+  [79,"Au","금",6,11],[80,"Hg","수은",6,12],[82,"Pb","납",6,14]
+];
+const COMPOUNDS = ["물(H₂O)","이산화 탄소(CO₂)","염화 나트륨(NaCl)","수산화 칼륨(KOH)","수산화 나트륨(NaOH)","글리세린","녹말","셀룰로스","젖산","탄산 칼슘(CaCO₃)"];
+const LOGO_SYMS = ["H","C","N","O","Na","Mg","Al","Si","Cl","K","Ca","Fe","Cu","Ag","Au","Li"];
+const COLORS = ["#16304f","#0d8486","#d23c3c","#e0a100","#2f8a3e","#7a4cc2","#ffffff"];
+
+const OPT = {
+  q0:{opts:["물","공기","흙","불"], ans:"물"},
+  gas:{opts:["수소","산소","질소","이산화 탄소"], ans:"수소"},
+  change:{opts:["물에서 나온 산소가 철과 결합하여 산화 철(녹)이 생성되었다.","물이 주철관 안에 그대로 고여 주철관이 무거워졌다.","주철관의 철이 수소 기체로 변하였다."], ans:"물에서 나온 산소가 철과 결합하여 산화 철(녹)이 생성되었다."}
+};
+const CHAIN = ["물이 수소와 산소로 분해되었다","산소가 주철관의 철과 결합하였다","산화 철(녹)이 주철관 안에 남았다","결합한 산소의 질량만큼 더해졌다","주철관 전체의 질량이 증가하였다"];
+const HINTS = {
+  roadmap:"카드를 뒤집어 단계별 미션을 읽어 보세요. ‘화학식 완성’, ‘입자(원자)’, ‘주기율표’, ‘분자 구조’, ‘이온’, ‘이온의 이동’ 같은 낱말이 힌트예요.",
+  blanks:"원소는 더 이상 ‘나누어지지’ 않아요. 화합물은 ‘두 가지 이상’이 결합한 물질이고, 화학적인 방법으로 다시 나눌 수 있어요.",
+  count:"주기율표 맨 마지막 원소인 오가네손(Og)의 원자 번호와 같아요.",
+  sort:"한 종류의 원소로만 된 것과, 두 종류 이상의 원소가 결합한 것을 나눠 보세요. 소금은 나트륨과 염소, 메테인은 탄소와 수소로 되어 있어요.",
+  q1:"실험 결과 요약을 다시 읽어 보세요. ‘녹이 슬었다’는 것은 철이 무엇과 결합했다는 뜻일까요?",
+  order:"가장 먼저 일어난 일은 물의 분해이고, 가장 마지막은 우리가 측정한 결과(질량 증가)예요."
+};
+const KEYWORDS = [["물",/물/],["수소",/수소/],["산소",/산소/],["분해",/분해|나누어|나뉘/],["원소가 아니다",/원소가\s*아니|원소\s*아님/],["화합물",/화합물/]];
+
+/* ---------- state ---------- */
+function blank(){return {
+  info:{grade:"2",cls:"",num:"",name:"",team:"",confirmed:false},
+  lab:{name:"",slogan:"",logo:"",roles:ROLES.map(r=>({name:"",job:r[1]})),myRole:""},
+  g2:{read:false},
+  s0:{area:"",custom:"",q1:"",q2:"",q3:"",defArea:"",product:"",defLab:""},
+  s1:{count:""},
+  lav:{q0:"",gas:"",change:"",q2:"",q3:""},
+  rd:{product:"",els:[],cps:[],next:""},
+  dnd:{},solved:{},tries:{},
+  savedAt:""
+};}
+let S = blank();
+let dirty = false, storageOK = true, currentKey = null;
+
+function merge(base, src){
+  if(!src || typeof src!=="object") return base;
+  for(const k of Object.keys(base)){
+    if(!(k in src)) continue;
+    if(base[k] && typeof base[k]==="object" && !Array.isArray(base[k]) && Object.keys(base[k]).length) base[k]=merge(base[k],src[k]);
+    else base[k]=src[k];
+  }
+  return base;
+}
+function getP(p){return p.split(".").reduce((o,k)=>o==null?undefined:o[k],S);}
+function setP(p,v){const ks=p.split(".");let o=S;for(let i=0;i<ks.length-1;i++)o=o[ks[i]];o[ks[ks.length-1]]=v;}
+
+/* storage */
+function sGet(k){try{return localStorage.getItem(k);}catch(e){storageOK=false;return null;}}
+function sSet(k,v){try{localStorage.setItem(k,v);return true;}catch(e){storageOK=false;return false;}}
+function sDel(k){try{localStorage.removeItem(k);}catch(e){}}
+function keyFor(){const i=S.info;return PREFIX+[i.grade,i.cls,i.num,i.name.trim()].join("-");}
+function save(force){
+  if(!dirty && !force) return;
+  if(!S.info.confirmed) return;
+  S.savedAt = new Date().toLocaleTimeString("ko-KR",{hour12:false});
+  currentKey = keyFor();
+  const ok = sSet(currentKey, JSON.stringify(S)) && sSet(PREFIX+"last", currentKey);
+  if(ok){dirty=false;$("#saveBadge").textContent="자동 저장됨 "+S.savedAt;}
+  else{$("#saveBadge").textContent="저장이 막혀 있어요";$("#storageWarn").hidden=false;}
+}
+function markDirty(){dirty=true;clearTimeout(markDirty.t);markDirty.t=setTimeout(()=>save(),1500);refresh();}
+setInterval(()=>save(),20000);
+window.addEventListener("beforeunload",()=>save());
+document.addEventListener("visibilitychange",()=>{if(document.hidden)save();});
+
+/* ---------- network badge ---------- */
+function net(){const on=navigator.onLine;const b=$("#net");b.textContent=on?"온라인":"오프라인 · 작성은 계속 저장돼요";b.classList.toggle("off",!on);}
+window.addEventListener("online",net);window.addEventListener("offline",net);net();
+
+/* ---------- binding ---------- */
+function fillBinds(){
+  $$("[data-bind]").forEach(el=>{const v=getP(el.dataset.bind);if(v!==undefined && el.value!==String(v))el.value=v;});
+}
+document.addEventListener("input",e=>{
+  const el=e.target.closest("[data-bind]");if(!el)return;
+  setP(el.dataset.bind, el.value);
+  if(el.dataset.bind==="lab.name"){ if(!S.s0.defLab || S.s0.defLab===prevLab) {S.s0.defLab=el.value; $("#def-lab").value=el.value;} prevLab=el.value; }
+  markDirty();
+});
+let prevLab="";
+
+/* ---------- info ---------- */
+(function(){
+  const c=$("#i-cls");for(let i=1;i<=12;i++)c.insertAdjacentHTML("beforeend",`<option value="${i}">${i}반</option>`);
+  const t=$("#i-team");for(let i=1;i<=8;i++)t.insertAdjacentHTML("beforeend",`<option value="${i}">${i}모둠</option>`);
+})();
+$("#startBtn").addEventListener("click",()=>{
+  const i=S.info;
+  if(!i.cls||!i.num||!i.name.trim()||!i.team){$("#infoMsg").textContent="반, 번호, 이름, 모둠을 모두 입력해 주세요.";return;}
+  const k=keyFor();
+  const existing=sGet(k);
+  if(existing && k!==currentKey){
+    try{const d=JSON.parse(existing);S=merge(blank(),d);}catch(e){}
+    $("#infoMsg").textContent="이전에 저장된 기록을 불러왔어요.";
+  }else $("#infoMsg").textContent="";
+  S.info.confirmed=true; currentKey=k;
+  renderAll(); save(true);
+  document.getElementById("sec-g1").scrollIntoView({behavior:"smooth"});
+});
+
+/* ---------- roles ---------- */
+function renderRoles(){
+  $("#rolesBody").innerHTML = ROLES.map((r,i)=>`<tr>
+    <td><input type="radio" name="myrole" id="role-r${i}" value="${esc(r[0])}" ${S.lab.myRole===r[0]?"checked":""} aria-label="내 역할: ${esc(r[0])}"></td>
+    <td class="r">${esc(r[0])}</td>
+    <td><input type="text" id="role-n${i}" data-bind="lab.roles.${i}.name" placeholder="이름"></td>
+    <td><input type="text" id="role-j${i}" data-bind="lab.roles.${i}.job"></td></tr>`).join("");
+}
+document.addEventListener("change",e=>{if(e.target.name==="myrole"){S.lab.myRole=e.target.value;markDirty();}});
+
+/* ---------- canvas ---------- */
+const cv=$("#cv"), ctx=cv.getContext("2d");
+let tool="pen", color=COLORS[0], size=9, drawing=false, last=null, undo=[];
+function cvClear(){ctx.fillStyle="#ffffff";ctx.fillRect(0,0,cv.width,cv.height);}
+cvClear();
+$("#swatches").innerHTML=COLORS.map((c,i)=>`<button class="sw ${i===0?"on":""}" data-color="${c}" style="background:${c};${c==="#ffffff"?"box-shadow:inset 0 0 0 1px #999":""}" aria-label="색 ${i+1}"></button>`).join("");
+$("#swatches").addEventListener("click",e=>{const b=e.target.closest("[data-color]");if(!b)return;color=b.dataset.color;tool="pen";$$(".sw").forEach(x=>x.classList.toggle("on",x===b));$$("[data-tool]").forEach(x=>x.classList.toggle("on",x.dataset.tool==="pen"));});
+$$("[data-tool]").forEach(b=>b.addEventListener("click",()=>{tool=b.dataset.tool;$$("[data-tool]").forEach(x=>x.classList.toggle("on",x===b));}));
+$$("[data-size]").forEach(b=>b.addEventListener("click",()=>{size=+b.dataset.size;$$("[data-size]").forEach(x=>x.classList.toggle("on",x===b));$$("[data-size]").forEach(x=>x.classList.toggle("toolbtn",true));}));
+function pos(e){const r=cv.getBoundingClientRect();return {x:(e.clientX-r.left)*cv.width/r.width,y:(e.clientY-r.top)*cv.height/r.height};}
+function pushUndo(){try{undo.push(ctx.getImageData(0,0,cv.width,cv.height));if(undo.length>20)undo.shift();}catch(e){}}
+function storeLogo(){try{S.lab.logo=cv.toDataURL("image/png");markDirty();}catch(e){}}
+cv.addEventListener("pointerdown",e=>{e.preventDefault();cv.setPointerCapture(e.pointerId);pushUndo();drawing=true;last=pos(e);dot(last);});
+cv.addEventListener("pointermove",e=>{if(!drawing)return;const p=pos(e);line(last,p);last=p;});
+["pointerup","pointercancel"].forEach(t=>cv.addEventListener(t,()=>{if(drawing){drawing=false;storeLogo();}}));
+function stroke(){ctx.strokeStyle=tool==="eraser"?"#ffffff":color;ctx.fillStyle=ctx.strokeStyle;ctx.lineWidth=tool==="eraser"?size*2.5:size;ctx.lineCap="round";ctx.lineJoin="round";}
+function dot(p){stroke();ctx.beginPath();ctx.arc(p.x,p.y,ctx.lineWidth/2,0,Math.PI*2);ctx.fill();}
+function line(a,b){stroke();ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();}
+$("#undoBtn").addEventListener("click",()=>{const d=undo.pop();if(d){ctx.putImageData(d,0,0);storeLogo();}});
+$("#clearBtn").addEventListener("click",()=>{pushUndo();cvClear();storeLogo();});
+let logoSyms=[];
+$("#symgrid").innerHTML=LOGO_SYMS.map(s=>`<button data-sym="${s}">${s}</button>`).join("");
+$("#symgrid").addEventListener("click",e=>{const b=e.target.closest("[data-sym]");if(!b)return;const s=b.dataset.sym;
+  if(logoSyms.includes(s))logoSyms=logoSyms.filter(x=>x!==s);else if(logoSyms.length<3)logoSyms.push(s);
+  $$("#symgrid button").forEach(x=>x.classList.toggle("on",logoSyms.includes(x.dataset.sym)));});
+$("#tileLogoBtn").addEventListener("click",()=>{
+  if(!logoSyms.length)return;
+  pushUndo();cvClear();
+  const n=logoSyms.length,w=170,h=190,gap=24,total=n*w+(n-1)*gap,x0=(cv.width-total)/2,y0=110;
+  const fill=color==="#ffffff"?COLORS[0]:color;
+  logoSyms.forEach((s,i)=>{const x=x0+i*(w+gap);
+    ctx.fillStyle=fill;roundRect(x,y0,w,h,18);ctx.fill();
+    const el=ELEMENTS.find(e=>e[1]===s);
+    ctx.fillStyle="#ffffff";ctx.font="600 26px 'IBM Plex Mono', monospace";ctx.textAlign="left";ctx.fillText(el?el[0]:"",x+16,y0+38);
+    ctx.font="600 86px 'IBM Plex Mono', monospace";ctx.textAlign="center";ctx.fillText(s,x+w/2,y0+130);
+    ctx.font="500 24px 'IBM Plex Sans KR', sans-serif";ctx.fillText(el?el[2]:"",x+w/2,y0+172);});
+  const nm=S.lab.name||"";ctx.fillStyle=fill;ctx.font="400 46px 'Do Hyeon', sans-serif";ctx.textAlign="center";ctx.fillText(nm,cv.width/2,y0+h+70);
+  storeLogo();
+});
+function roundRect(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+function restoreLogo(){cvClear();undo=[];if(!S.lab.logo)return;const im=new Image();im.onload=()=>ctx.drawImage(im,0,0,cv.width,cv.height);im.src=S.lab.logo;}
+
+/* ---------- brief + roadmap ---------- */
+$("#roadmap").innerHTML=ROADMAP.map((r,i)=>`<button class="rm ${i<=1?"today":""}" aria-label="${esc(r[0]+" "+r[1])} 카드 뒤집기"><div class="in">
+  <div class="face front">${i<=1?'<span class="today-badge">TODAY</span>':""}<span class="st">${esc(r[0])}</span><span class="nm">${esc(r[1])}</span><span class="tap">눌러서 미션 보기</span></div>
+  <div class="face back"><span class="st" style="color:#8fe3df">${esc(r[0])} 미션</span>${esc(r[2])}</div></div></button>`).join("");
+$("#roadmap").addEventListener("click",e=>{const b=e.target.closest(".rm");if(b)b.classList.toggle("flip");});
+$("#briefBtn").addEventListener("click",()=>{S.g2.read=true;$("#briefOk").textContent="확인 완료! 오늘부터 여러분은 R&D팀입니다.";markDirty();});
+$("#matchgrid").innerHTML=ROADMAP.slice(1,8).map((r,i)=>`<div class="mrow"><b>${r[0]}</b><span class="slot" data-zone="m${i+1}"></span></div>`).join("");
+
+/* ---------- generic DnD ---------- */
+const DND = {};
+function makeDnD(key, root, cards, answer, opts={}){
+  const d={key,root,cards,answer,bank:root.querySelector("[data-bank]"),zones:{},locked:false,sel:null};
+  root.querySelectorAll("[data-zone]").forEach(z=>{d.zones[z.dataset.zone]={el:z,multi:z.hasAttribute("data-multi"),holder:z.querySelector(".in")||z};});
+  root.dataset.dnd=key;
+  DND[key]=d;
+  return d;
+}
+function placement(key){if(!S.dnd[key])S.dnd[key]={};return S.dnd[key];}
+function renderDnD(key){
+  const d=DND[key], pl=placement(key);
+  d.bank.innerHTML="";Object.values(d.zones).forEach(z=>z.holder.innerHTML="");
+  d.cards.forEach(c=>{
+    const el=document.createElement("span");el.className="card";el.textContent=c.label;el.dataset.card=c.id;el.tabIndex=0;el.setAttribute("role","button");
+    const zid=pl[c.id];(zid && d.zones[zid]?d.zones[zid].holder:d.bank).appendChild(el);
+  });
+  d.locked=!!S.solved[key];
+  d.root.classList.toggle("locked-dnd",d.locked);
+  if(d.locked)Object.entries(d.zones).forEach(([zid,z])=>z.el.classList.add("right"));
+}
+function moveCard(key,cardId,zoneId){
+  const d=DND[key],pl=placement(key);
+  if(d.locked)return;
+  if(zoneId && !d.zones[zoneId].multi){
+    const occ=Object.keys(pl).find(c=>pl[c]===zoneId && c!==cardId);
+    if(occ){ if(pl[cardId]) pl[occ]=pl[cardId]; else delete pl[occ]; }
+  }
+  if(zoneId)pl[cardId]=zoneId;else delete pl[cardId];
+  Object.values(d.zones).forEach(z=>z.el.classList.remove("wrong"));
+  d.sel=null;renderDnD(key);markDirty();
+}
+// pointer handling (shared)
+let drag=null;
+document.addEventListener("pointerdown",e=>{
+  const card=e.target.closest(".card");if(!card)return;
+  const root=card.closest("[data-dnd]");if(!root)return;const d=DND[root.dataset.dnd];if(d.locked)return;
+  drag={key:d.key,card,id:card.dataset.card,x:e.clientX,y:e.clientY,moved:false,ghost:null,pid:e.pointerId};
+  try{card.setPointerCapture(e.pointerId);}catch(_){}
+});
+document.addEventListener("pointermove",e=>{
+  if(!drag||e.pointerId!==drag.pid)return;
+  if(!drag.moved && Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<7)return;
+  e.preventDefault();
+  if(!drag.moved){drag.moved=true;drag.ghost=drag.card.cloneNode(true);drag.ghost.classList.add("drag-ghost");document.body.appendChild(drag.ghost);drag.card.classList.add("dragging");}
+  drag.ghost.style.left=e.clientX+"px";drag.ghost.style.top=e.clientY+"px";
+  $$(".slot.hover,.bin.hover").forEach(z=>z.classList.remove("hover"));
+  const z=zoneAt(e.clientX,e.clientY,drag.key);if(z&&z.el)z.el.classList.add("hover");
+});
+function zoneAt(x,y,key){
+  if(drag&&drag.ghost)drag.ghost.style.display="none";
+  const t=document.elementFromPoint(x,y);
+  if(drag&&drag.ghost)drag.ghost.style.display="";
+  if(!t)return null;const root=t.closest("[data-dnd]");if(!root||root.dataset.dnd!==key)return null;
+  const z=t.closest("[data-zone]");if(z)return {id:z.dataset.zone,el:z};
+  if(t.closest("[data-bank]"))return {id:null,el:null,bank:true};
+  return null;
+}
+function endDrag(e){
+  if(!drag||e.pointerId!==drag.pid)return;
+  const dr=drag;drag=null;
+  $$(".slot.hover,.bin.hover").forEach(z=>z.classList.remove("hover"));
+  if(dr.moved){
+    const z=zoneAt(e.clientX,e.clientY,dr.key);
+    dr.ghost.remove();dr.card.classList.remove("dragging");
+    if(z)moveCard(dr.key,dr.id,z.id);
+  }else{
+    const d=DND[dr.key];
+    if(d.sel===dr.id){d.sel=null;dr.card.classList.remove("sel");}
+    else{$$(`[data-dnd="${dr.key}"] .card.sel`).forEach(c=>c.classList.remove("sel"));d.sel=dr.id;dr.card.classList.add("sel");}
+  }
+}
+document.addEventListener("pointerup",endDrag);document.addEventListener("pointercancel",e=>{if(drag&&drag.ghost){drag.ghost.remove();drag.card.classList.remove("dragging");}drag=null;});
+document.addEventListener("click",e=>{
+  if(e.target.closest(".card"))return;
+  const root=e.target.closest("[data-dnd]");if(!root)return;const d=DND[root.dataset.dnd];if(!d.sel||d.locked)return;
+  const z=e.target.closest("[data-zone]");if(z){moveCard(d.key,d.sel,z.dataset.zone);return;}
+  if(e.target.closest("[data-bank]"))moveCard(d.key,d.sel,null);
+});
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"&&e.key!==" ")return;const card=e.target.closest&&e.target.closest(".card");if(!card)return;e.preventDefault();
+  const root=card.closest("[data-dnd]");const d=DND[root.dataset.dnd];if(d.locked)return;
+  // keyboard: select, then cycle into next empty zone
+  const zids=Object.keys(d.zones);const pl=placement(d.key);const cur=pl[card.dataset.card];
+  const idx=cur?zids.indexOf(cur)+1:0; moveCard(d.key,card.dataset.card, idx<zids.length?zids[idx]:null);
+});
+function checkDnD(key){
+  const d=DND[key],pl=placement(key);let ok=true;
+  Object.entries(d.zones).forEach(([zid,z])=>{
+    const want=d.answer[zid].slice().sort().join("|");
+    const got=Object.keys(pl).filter(c=>pl[c]===zid).sort().join("|");
+    const zok=want===got;z.el.classList.remove("wrong","right");void z.el.offsetWidth;
+    if(!zok){ok=false;z.el.classList.add("wrong");}
+  });
+  if(d.cards.some(c=>!pl[c.id] && Object.values(d.answer).some(a=>a.includes(c.id))))ok=false;
+  // mark wrong cards in multi bins
+  d.root.querySelectorAll(".card").forEach(c=>{const zid=pl[c.dataset.card];c.classList.toggle("wrongc",!!zid&&!d.answer[zid].includes(c.dataset.card));});
+  return ok;
+}
+
+/* build DnDs */
+const shuffle=a=>{const b=a.slice();for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;};
+function seeded(arr,seed){ // stable shuffle per student
+  let h=0;for(const ch of seed)h=(h*31+ch.charCodeAt(0))>>>0;const b=arr.slice();
+  for(let i=b.length-1;i>0;i--){h=(h*1103515245+12345)>>>0;const j=h%(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;}
+function buildDnDs(){
+  const seed=keyFor();
+  makeDnD("roadmap",$("#q-roadmap"),seeded(CONCEPTS.map((c,i)=>({id:"c"+i,label:c})),seed+"r"),Object.fromEntries(CONCEPTS.map((c,i)=>["m"+(i+1),["c"+i]])));
+  const bl=[["w1","분해"],["w2","종류"],["w3","두 종류"],["w4","원소로 분해할 수 있다"],["x1","혼합"],["x2","크기"],["x3","한 종류"],["x4","분해할 수 없다"]];
+  makeDnD("blanks",$("#q-blanks"),seeded(bl.map(b=>({id:b[0],label:b[1]})),seed+"b"),{b1:["w1"],b2:["w2"],b3:["w3"],b4:["w4"]});
+  const so=[["e1","수소"],["e2","산소"],["e3","철"],["e4","헬륨"],["k1","물"],["k2","이산화 탄소"],["k3","염화 나트륨(소금)"],["k4","메테인"]];
+  makeDnD("sort",$("#q-sort"),seeded(so.map(s=>({id:s[0],label:s[1]})),seed+"s"),{el:["e1","e2","e3","e4"],cp:["k1","k2","k3","k4"]});
+  $("#chain").innerHTML=CHAIN.map((c,i)=>`<div class="crow"><b>${i+1}</b><span class="slot" data-zone="o${i+1}"></span></div>`).join("");
+  makeDnD("order",$("#q-order"),seeded(CHAIN.map((c,i)=>({id:"o"+i,label:c})),seed+"o"),Object.fromEntries(CHAIN.map((c,i)=>["o"+(i+1),["o"+i]])));
+}
+
+/* ---------- options ---------- */
+function renderOpts(){
+  $$("[data-opt]").forEach(box=>{const k=box.dataset.opt;const o=OPT[k];const cur=S.lav[k];const solved=S.solved[k==="q0"?"q0":"q1"];
+    box.innerHTML=o.opts.map(t=>`<button class="opt ${cur===t?"on":""} ${solved&&cur===t?"right":""}" data-v="${esc(t)}">${esc(t)}</button>`).join("");});
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest(".opt");if(!b)return;const box=b.closest("[data-opt]");const k=box.dataset.opt;
+  if(S.solved[k==="q0"?"q0":"q1"])return;
+  S.lav[k]=b.dataset.v;renderOpts();markDirty();
+});
+
+/* ---------- checks ---------- */
+function bump(k){S.tries[k]=(S.tries[k]||0)+1;}
+function feedback(k,ok,msg){
+  const fb=$(`[data-fb="${k}"]`);fb.className="fb "+(ok?"ok":"bad");fb.textContent=msg;
+  const t=$(`[data-tries="${k}"]`);if(t)t.textContent=S.tries[k]?`시도 ${S.tries[k]}회`:"";
+  const h=$(`[data-hint="${k}"]`);if(h)h.hidden=ok||(S.tries[k]||0)<2;
+}
+const PRAISE=["정확해요! 연구 노트에 기록 완료.","완벽해요! 다음 미션으로 가요.","맞았어요! 연구원다운 분석이에요."];
+const praise=()=>PRAISE[Math.floor(Math.random()*PRAISE.length)];
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-check]");if(!b)return;const k=b.dataset.check;
+  if(S.solved[k]){feedback(k,true,"이미 해결했어요.");return;}
+  let ok=false,msg="";
+  if(DND[k]){
+    const pl=placement(k);const needed=Object.values(DND[k].answer).flat().length;
+    if(Object.keys(pl).filter(c=>DND[k].cards.some(x=>x.id===c)).length<needed && k!=="sort"){feedback(k,false,"아직 빈칸이 남아 있어요. 카드를 모두 옮긴 뒤 확인하세요.");return;}
+    bump(k);ok=checkDnD(k);msg=ok?praise():"빨간 칸을 다시 살펴보세요. 맞을 때까지 다시 도전할 수 있어요.";
+  }else if(k==="count"){
+    if(!S.s1.count){feedback(k,false,"숫자를 입력하세요.");return;}
+    bump(k);ok=String(S.s1.count).trim()==="118";msg=ok?"맞아요! 현재까지 알려진 원소는 118가지예요.":"다시 생각해 보세요. 90여 + 20여 가지를 합친 정확한 수예요.";
+  }else if(k==="q0"){
+    if(!S.lav.q0){feedback(k,false,"하나를 고르세요.");return;}
+    bump(k);ok=S.lav.q0===OPT.q0.ans;msg=ok?"맞아요! 라부아지에는 물을 분해해 물이 원소가 아님을 밝혔어요.":"4원소설에서 원소라고 믿었던 것 중, 실험 그림의 주전자에 든 물질을 떠올려 보세요.";
+  }else if(k==="q1"){
+    if(!S.lav.gas||!S.lav.change){feedback(k,false,"기체 이름과 주철관 내부의 변화를 모두 고르세요.");return;}
+    bump(k);const g=S.lav.gas===OPT.gas.ans,c=S.lav.change===OPT.change.ans;ok=g&&c;
+    msg=ok?praise():(!g&&!c?"두 답을 모두 다시 살펴보세요.":!g?"기체 이름을 다시 살펴보세요.":"주철관 내부의 변화를 다시 살펴보세요.");
+    if(!ok){$$('[data-opt="gas"] .opt.on').forEach(x=>x.classList.toggle("wrong",!g));$$('[data-opt="change"] .opt.on').forEach(x=>x.classList.toggle("wrong",!c));}
+  }
+  if(ok){S.solved[k]=true;if(DND[k])renderDnD(k);if(k==="order")afterOrder();renderOpts();}
+  feedback(k,ok,msg);markDirty();
+});
+$$("[data-hint]").forEach(b=>b.addEventListener("click",()=>{const k=b.dataset.hint;const fb=$(`[data-fb="${k}"]`);fb.className="fb hint";fb.textContent="힌트: "+HINTS[k];}));
+function afterOrder(){
+  $("#q2wrap").hidden=false;
+  if(!S.lav.q2){S.lav.q2="물이 수소와 산소로 분해되었다. 이때 생긴 산소가 주철관의 철과 결합하여 산화 철(녹)이 주철관 안에 남았다. 따라서 결합한 산소의 질량만큼 더해져 주철관 전체의 질량이 증가하였다.";
+    $("#lav-q2").value=S.lav.q2;}
+}
+$("#kwBtn").addEventListener("click",()=>{
+  const t=S.lav.q3||"";const box=$("#kw");box.hidden=false;
+  box.innerHTML=KEYWORDS.map(([n,re])=>`<span class="${re.test(t)?"hit":""}">${re.test(t)?"✓ ":"○ "}${esc(n)}</span>`).join("");
+});
+
+/* ---------- step 0 ---------- */
+function renderAreas(){
+  $("#areas").innerHTML=AREAS.map(a=>`<button class="choice ${S.s0.area===a[0]?"on":""}" data-area="${esc(a[0])}" aria-pressed="${S.s0.area===a[0]}"><svg class="ic" viewBox="0 0 36 36" aria-hidden="true">${a[2]}</svg><b>${esc(a[0])}</b><span>${esc(a[1])}</span></button>`).join("");
+  $("#customWrap").hidden=S.s0.area!=="우리 팀만의 아이디어";
+}
+$("#areas").addEventListener("click",e=>{const b=e.target.closest("[data-area]");if(!b)return;
+  const prev=areaLabel();S.s0.area=b.dataset.area;
+  if(!S.s0.defArea||S.s0.defArea===prev){S.s0.defArea=areaLabel();$("#def-area").value=S.s0.defArea;}
+  renderAreas();markDirty();});
+$("#area-custom").addEventListener("input",()=>{if(S.s0.area==="우리 팀만의 아이디어"){S.s0.defArea=S.s0.custom;$("#def-area").value=S.s0.custom;}});
+function areaLabel(){return S.s0.area==="우리 팀만의 아이디어"?(S.s0.custom||""):S.s0.area;}
+
+/* ---------- R&D ---------- */
+function renderPT(){
+  const pt=$("#ptable");let html="";
+  for(let g=1;g<=18;g++)html+=`<div class="glabel" style="grid-row:1;grid-column:${g}">${g}</div>`;
+  ELEMENTS.forEach(([z,s,n,p,g])=>{html+=`<button class="el ${S.rd.els.includes(s)?"on":""}" data-el="${s}" style="grid-row:${p+1};grid-column:${g}" aria-pressed="${S.rd.els.includes(s)}"><em>${z}</em><b>${s}</b><small>${n}</small></button>`;});
+  pt.innerHTML=html;
+}
+$("#ptable").addEventListener("click",e=>{const b=e.target.closest("[data-el]");if(!b)return;const s=b.dataset.el;
+  S.rd.els=S.rd.els.includes(s)?S.rd.els.filter(x=>x!==s):[...S.rd.els,s];renderPT();renderRdChips();markDirty();});
+function elLabel(s){const e=ELEMENTS.find(x=>x[1]===s);return e?`${e[2]}(${s})`:s;}
+function renderRdChips(){
+  $("#rd-els").innerHTML=S.rd.els.length?S.rd.els.map(s=>`<button class="chip on" data-rmel="${s}" title="빼기">${esc(elLabel(s))} ×</button>`).join(""):'<span class="note">아래 주기율표에서 고르세요</span>';
+  $("#rd-cps").innerHTML=S.rd.cps.length?S.rd.cps.map(c=>`<button class="chip on" data-rmcp="${esc(c)}" title="빼기">${esc(c)} ×</button>`).join(""):'<span class="note">아래 목록에서 고르세요</span>';
+  const all=[...COMPOUNDS,...S.rd.cps.filter(c=>!COMPOUNDS.includes(c))];
+  $("#cpchoices").innerHTML=all.map(c=>`<button class="chip ${S.rd.cps.includes(c)?"on":""}" data-cp="${esc(c)}">${esc(c)}</button>`).join("");
+  $("#rd-team").textContent=S.info.team?S.info.team+"모둠":"–";
+  $("#rd-area").textContent=areaLabel()||"Step 0에서 선택";
+}
+document.addEventListener("click",e=>{
+  const a=e.target.closest("[data-rmel]");if(a){S.rd.els=S.rd.els.filter(x=>x!==a.dataset.rmel);renderPT();renderRdChips();markDirty();return;}
+  const b=e.target.closest("[data-rmcp]");if(b){S.rd.cps=S.rd.cps.filter(x=>x!==b.dataset.rmcp);renderRdChips();markDirty();return;}
+  const c=e.target.closest("[data-cp]");if(c){const v=c.dataset.cp;S.rd.cps=S.rd.cps.includes(v)?S.rd.cps.filter(x=>x!==v):[...S.rd.cps,v];renderRdChips();markDirty();}
+});
+$("#cpAdd").addEventListener("click",()=>{const v=$("#cp-custom").value.trim();if(!v)return;if(!S.rd.cps.includes(v))S.rd.cps.push(v);$("#cp-custom").value="";renderRdChips();markDirty();});
+$("#cp-custom").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#cpAdd").click();}});
+// keep product in sync with step0 definition if empty
+document.addEventListener("input",e=>{if(e.target.id==="def-product"&&(!S.rd.product||S.rd.product===prevProd)){S.rd.product=e.target.value;$("#rd-product").value=e.target.value;}if(e.target.id==="def-product")prevProd=e.target.value;});
+let prevProd="";
+
+/* ---------- progress ---------- */
+function doneMap(){
+  const L=S.lab,s0=S.s0,v=S.lav,r=S.rd;
+  return {
+    "sec-info":S.info.confirmed,
+    "sec-g1":!!(L.name.trim()&&L.slogan.trim()&&L.myRole&&L.roles.filter(x=>x.name.trim()).length>=2),
+    "sec-g2":!!(S.g2.read&&S.solved.roadmap),
+    "sec-s0":!!(areaLabel()&&s0.q1.trim()&&s0.q2.trim()&&s0.q3.trim()&&s0.product.trim()&&s0.defArea.trim()&&s0.defLab.trim()),
+    "sec-s1":!!(S.solved.blanks&&S.solved.count&&S.solved.sort),
+    "sec-lav":!!(S.solved.q0&&S.solved.q1&&S.solved.order&&v.q3.trim().length>=15),
+    "sec-rd":!!(r.product.trim()&&r.els.length>=2&&r.cps.length>=1&&r.next.trim())
+  };
+}
+const PILLTXT={"sec-info":"1분","sec-g1":"7분 · 모둠","sec-g2":"5분","sec-s0":"8분 · 모둠","sec-s1":"8분","sec-lav":"10분","sec-rd":"7분 · 모둠"};
+function refresh(){
+  const dm=doneMap();const keys=Object.keys(dm);const n=keys.filter(k=>dm[k]).length;
+  $("#prog").style.width=(n/keys.length*100)+"%";
+  $$("#nav button").forEach(b=>b.classList.toggle("done",!!dm[b.dataset.go]));
+  keys.forEach(k=>{const p=$("#pill-"+k.slice(4));if(p){p.classList.toggle("done",dm[k]);p.textContent=dm[k]?"완료":PILLTXT[k];}});
+  $$(".gated").forEach(s=>s.classList.toggle("locked",!S.info.confirmed));
+  $("#briefTitle").textContent=(S.lab.name?S.lab.name+" ":"")+"R&D팀 브리핑";
+  renderRdChips();
+  clearTimeout(refresh.t);refresh.t=setTimeout(renderReport,300);
+}
+
+/* ---------- nav ---------- */
+$("#nav").addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b)return;document.getElementById(b.dataset.go).scrollIntoView({behavior:"smooth",block:"start"});});
+const io=new IntersectionObserver(ents=>{ents.forEach(en=>{if(en.isIntersecting){$$("#nav button").forEach(b=>b.classList.toggle("current",b.dataset.go===en.target.id));const cb=$(`#nav button[data-go="${en.target.id}"]`);if(cb){const nv=$("#nav");nv.scrollTo({left:cb.offsetLeft-nv.clientWidth/2+cb.offsetWidth/2,behavior:"smooth"});}}});},{rootMargin:"-40% 0px -55% 0px"});
+$$("section.sheet").forEach(s=>io.observe(s));
+
+/* ---------- report ---------- */
+function yes(b){return b?'<span class="ok">완료</span>':'<span class="no">미완료</span>';}
+function renderReport(){
+  const i=S.info,L=S.lab,s0=S.s0,v=S.lav,r=S.rd,dm=doneMap();
+  const t=k=>S.tries[k]?S.tries[k]+"회":"–";
+  $("#report").innerHTML=`
+  <div class="meta"><div><h3>ELEMENT LAB · 1차시 연구 노트</h3><div>${esc(SCHOOL)} · Ⅳ. 물질의 구성 · 원소와 화합물</div></div>
+  <div style="text-align:right">${esc(i.grade)}학년 ${esc(i.cls||"__")}반 ${esc(i.num||"__")}번 <b>${esc(i.name||"______")}</b><br>${esc(i.team||"_")}모둠 · 저장 ${esc(S.savedAt||"-")}</div></div>
+  <h4>안내 1 · 연구소 설립</h4>
+  <table><tr><th>연구소 이름</th><td>${esc(L.name)}</td></tr><tr><th>한 줄 슬로건</th><td>${esc(L.slogan)}</td></tr>
+  <tr><th>로고</th><td>${L.logo?`<img class="logo" src="${L.logo}" alt="로고">`:"(그리지 않음)"}</td></tr>
+  <tr><th>역할 분담</th><td>${ROLES.map((ro,k)=>`${ro[0]}: <b>${esc(L.roles[k].name)}</b> — ${esc(L.roles[k].job)}${L.myRole===ro[0]?" ◀ 내 역할":""}`).join("<br>")}</td></tr></table>
+  <h4>안내 2 · 미션 브리핑</h4>
+  <table><tr><th>브리핑 확인</th><td>${yes(S.g2.read)}</td></tr><tr><th>로드맵 핵심 개념 연결</th><td>${yes(S.solved.roadmap)} (시도 ${t("roadmap")})</td></tr></table>
+  <h4>Step 0 · 어떤 문제를 해결할까?</h4>
+  <table><tr><th>선택한 문제 영역</th><td>${esc(areaLabel())}</td></tr>
+  <tr><th>실제 모습</th><td>${esc(s0.q1)}</td></tr><tr><th>해결하면 나아지는 점</th><td>${esc(s0.q2)}</td></tr><tr><th>필요한 물질 지식</th><td>${esc(s0.q3)}</td></tr>
+  <tr><th>문제 정의문</th><td>우리는 <b>${esc(s0.defArea)}</b> 문제를 해결하기 위해, <b>${esc(s0.product)}</b>를 개발하는 <b>${esc(s0.defLab)}</b> 연구소입니다.</td></tr></table>
+  <h4>Step 1 · 원소와 화합물</h4>
+  <table><tr><th>개념 빈칸</th><td>${yes(S.solved.blanks)} (시도 ${t("blanks")})</td></tr><tr><th>원소의 종류</th><td>${esc(S.s1.count||"-")}가지 ${yes(S.solved.count)} (시도 ${t("count")})</td></tr>
+  <tr><th>원소·화합물 분류</th><td>${yes(S.solved.sort)} (시도 ${t("sort")})</td></tr></table>
+  <h4>R&amp;D 미션 · 라부아지에의 질문</h4>
+  <table><tr><th>분해한 물질</th><td>${esc(v.q0)} ${yes(S.solved.q0)} (시도 ${t("q0")})</td></tr>
+  <tr><th>1. 기체 / 내부 변화</th><td>${esc(v.gas)} / ${esc(v.change)} ${yes(S.solved.q1)} (시도 ${t("q1")})</td></tr>
+  <tr><th>2. 질량 증가 까닭</th><td>${esc(v.q2)} ${S.solved.order?"":"<br>"+yes(false)} (순서 배열 시도 ${t("order")})</td></tr>
+  <tr><th>3. 4원소설이 틀린 이유</th><td>${esc(v.q3)}</td></tr></table>
+  <h4>R&amp;D 미션 · 우리 제품의 핵심 원소와 화합물</h4>
+  <table><tr><th>모둠 / 문제 영역</th><td>${esc(i.team)}모둠 / ${esc(areaLabel())}</td></tr><tr><th>제품명</th><td>${esc(r.product)}</td></tr>
+  <tr><th>사용 원소</th><td>${esc(r.els.map(elLabel).join(", "))}</td></tr><tr><th>사용 화합물</th><td>${esc(r.cps.join(", "))}</td></tr>
+  <tr><th>다음 시간에 확인할 것</th><td>${esc(r.next)}</td></tr></table>
+  <h4>진행 요약</h4>
+  <table><tr><th>완료한 활동</th><td>${Object.values(dm).filter(Boolean).length} / ${Object.keys(dm).length}</td></tr></table>`;
+}
+
+/* ---------- export ---------- */
+let downloads=null;
+if(window.claude&&window.claude.use){window.claude.use("downloads").then(d=>{downloads=d;}).catch(()=>{});}
+function fname(ext){const i=S.info;const z=n=>String(n||"0").padStart(2,"0");return `ELEMENT-LAB-1_${i.grade||2}-${z(i.cls)}-${z(i.num)}.${ext}`;}
+function msg(text,ok){const m=$("#exportMsg");m.className="fb "+(ok?"ok":"hint");m.textContent=text;}
+async function snap(){
+  if(!window.html2canvas)throw new Error("nolib");
+  save(true);renderReport();
+  return await window.html2canvas($("#report"),{scale:2,backgroundColor:"#ffffff",useCORS:true});
+}
+const IN_CLAUDE=!!(window.claude&&window.claude.use);
+function directDownload(blob,name){
+  try{const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);return true;}catch(e){return false;}
+}
+if(!IN_CLAUDE){$("#printBtn").hidden=false;$("#printNote").textContent="종이로 낼 때는 인쇄하기를 누르세요(결과지만 인쇄돼요).";}
+$("#printBtn").addEventListener("click",()=>{save(true);renderReport();window.print();});
+async function offer(blob,ext,fallbackCanvas){
+  if(downloads){
+    try{await downloads.save({filename:fname(ext),data:blob});msg("저장했어요: "+fname(ext),true);return;}
+    catch(err){if(err&&err.code==="declined"){msg("저장을 취소했어요.");return;}}
+  }
+  if(!IN_CLAUDE&&directDownload(blob,fname(ext))){msg("저장했어요: "+fname(ext)+" (다운로드 폴더 확인)",true);return;}
+  showImage(fallbackCanvas);
+}
+function showImage(canvas){
+  const url=canvas.toDataURL("image/png");
+  openModal(`<h3 style="font-size:22px">결과지 이미지</h3><p class="note">이 화면에서는 바로 내려받기가 되지 않아요. 이미지를 마우스 오른쪽 버튼(또는 두 손가락 탭)으로 눌러 <b>이미지를 다른 이름으로 저장</b>하거나, 크롬북 화면 캡처(Ctrl + Shift + 창 표시 키)를 사용하세요.</p><img src="${url}" alt="결과지 이미지"><button class="btn" data-close>닫기</button>`);
+}
+$("#pdfBtn").addEventListener("click",async()=>{
+  try{
+    msg("결과지를 만드는 중이에요…");
+    const c=await snap();
+    if(!window.jspdf)throw new Error("nolib");
+    const {jsPDF}=window.jspdf;const pdf=new jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
+    const pw=210,ph=297,m=8,iw=pw-2*m,pageHpx=Math.floor(c.width*(ph-2*m)/iw);
+    for(let y=0,p=0;y<c.height;y+=pageHpx,p++){
+      const h=Math.min(pageHpx,c.height-y);const part=document.createElement("canvas");part.width=c.width;part.height=h;
+      part.getContext("2d").drawImage(c,0,y,c.width,h,0,0,c.width,h);
+      if(p>0)pdf.addPage();pdf.addImage(part.toDataURL("image/jpeg",0.92),"JPEG",m,m,iw,h*iw/c.width);
+    }
+    await offer(pdf.output("blob"),"pdf",c);
+  }catch(e){msg("PDF 만들기 기능을 불러오지 못했어요(인터넷 연결 확인). 대신 아래 결과지를 화면 캡처해서 제출하세요.");}
+});
+$("#pngBtn").addEventListener("click",async()=>{
+  try{msg("이미지를 만드는 중이에요…");const c=await snap();c.toBlob(b=>offer(b,"png",c),"image/png");}
+  catch(e){msg("이미지 만들기 기능을 불러오지 못했어요(인터넷 연결 확인). 아래 결과지를 화면 캡처해서 제출하세요.");}
+});
+$("#jsonBtn").addEventListener("click",async()=>{
+  save(true);const data=JSON.stringify(S);
+  if(downloads){try{await downloads.save({filename:fname("json"),data});msg("기록 파일을 저장했어요.",true);return;}catch(err){if(err&&err.code==="declined"){msg("저장을 취소했어요.");return;}}}
+  if(!IN_CLAUDE&&directDownload(new Blob([data],{type:"application/json"}),fname("json"))){msg("기록 파일을 저장했어요 (다운로드 폴더 확인).",true);return;}
+  msg("이 화면에서는 기록 파일 저장이 지원되지 않아요. 자동 저장은 계속 작동 중이에요.");
+});
+$("#jsonIn").addEventListener("change",e=>{
+  const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{try{const d=JSON.parse(rd.result);S=merge(blank(),d);currentKey=null;renderAll();save(true);msg("기록을 불러왔어요.",true);}catch(err){msg("기록 파일을 읽을 수 없어요.");}};
+  rd.readAsText(f);e.target.value="";
+});
+$("#resetBtn").addEventListener("click",()=>{
+  openModal(`<h3 style="font-size:22px">새 학생으로 시작할까요?</h3><p>지금 화면의 기록은 이 크롬북에 저장된 채로 남고, 입력 칸만 비워져요. 같은 반·번호·이름으로 다시 등록하면 기록을 다시 불러올 수 있어요.</p><div class="row"><button class="btn" id="doReset">새로 시작</button><button class="btn ghost" data-close>취소</button></div>`);
+  $("#doReset").addEventListener("click",()=>{save(true);sDel(PREFIX+"last");S=blank();currentKey=null;renderAll();closeModal();window.scrollTo({top:0,behavior:"smooth"});});
+});
+
+/* ---------- modal + teacher ---------- */
+function openModal(html){$("#modalCard").innerHTML=html;$("#modal").hidden=false;}
+function closeModal(){$("#modal").hidden=true;$("#modalCard").innerHTML="";}
+$("#modal").addEventListener("click",e=>{if(e.target.id==="modal"||e.target.closest("[data-close]"))closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#modal").hidden)closeModal();});
+$("#teacherBtn").addEventListener("click",()=>{
+  openModal(`<h3 style="font-size:22px">교사용 정답 보기</h3><div class="row"><input type="password" id="tpw" placeholder="비밀번호" style="max-width:220px"><button class="btn" id="tgo">확인</button><button class="btn ghost" data-close>닫기</button></div><div class="fb" id="tmsg"></div>`);
+  const go=()=>{if($("#tpw").value===TEACHER_PW)showAnswers();else{const m=$("#tmsg");m.className="fb bad";m.textContent="비밀번호가 맞지 않아요.";}};
+  $("#tgo").addEventListener("click",go);$("#tpw").addEventListener("keydown",e=>{if(e.key==="Enter")go();});$("#tpw").focus();
+});
+function showAnswers(){
+  openModal(`<h3 style="font-size:22px">정답과 모범 답안</h3><ol class="answers">
+  <li>안내 2 로드맵: Step 1 원소와 화합물 · Step 2 원소 기호와 화학식 · Step 3 원소를 구성하는 입자 · Step 4 주기율표 · Step 5 원자, 분자 · Step 6 이온 · Step 7 이온의 이동</li>
+  <li>Step 1 개념: (분해) · (종류) · (두 종류) · (원소로 분해할 수 있다) / 원소의 종류 118가지</li>
+  <li>분류: 원소 — 수소, 산소, 철, 헬륨 / 화합물 — 물, 이산화 탄소, 염화 나트륨, 메테인</li>
+  <li>라부아지에: (물)을 분해 / 1. 수소, 물에서 나온 산소가 철과 결합하여 산화 철(녹)이 생성</li>
+  <li>2. 물이 수소와 산소로 분해되었고, 이때 생긴 산소가 주철관의 철과 결합해 산화 철로 남았다. 결합한 산소의 질량만큼 주철관 전체의 질량이 증가했다.</li>
+  <li>3. 4원소설은 물을 더 이상 나눌 수 없는 원소로 보았다. 그러나 물은 수소와 산소라는 두 종류의 물질로 분해되었으므로 원소가 아니라 화합물이다. 따라서 4원소설은 틀렸다.</li>
+  <li>R&amp;D 미션 예시: 친환경 세제 — C, H, O, K / 수산화 칼륨(KOH), 글리세린</li></ol>
+  <p class="note">비밀번호는 코드 맨 위 TEACHER_PW 값으로 바꿀 수 있어요.</p><button class="btn" data-close>닫기</button>`);
+}
+
+/* ---------- render all ---------- */
+function renderAll(){
+  fillBinds();renderRoles();fillBinds();restoreLogo();
+  $("#briefOk").textContent=S.g2.read?"확인 완료! 오늘부터 여러분은 R&D팀입니다.":"";
+  buildDnDs();Object.keys(DND).forEach(renderDnD);
+  ["roadmap","blanks","count","sort","q0","q1","order"].forEach(k=>{
+    const t=$(`[data-tries="${k}"]`);if(t)t.textContent=S.tries[k]?`시도 ${S.tries[k]}회`:"";
+    const fb=$(`[data-fb="${k}"]`);if(fb){if(S.solved[k]){fb.className="fb ok";fb.textContent="해결 완료";}else{fb.className="fb";fb.textContent="";}}
+    const h=$(`[data-hint="${k}"]`);if(h)h.hidden=!!S.solved[k]||(S.tries[k]||0)<2;
+  });
+  if(S.solved.count)$("#count").disabled=true;else $("#count").disabled=false;
+  $("#q2wrap").hidden=!S.solved.order;
+  renderOpts();renderAreas();renderPT();
+  prevLab=S.lab.name;prevProd=S.s0.product;
+  $("#kw").hidden=true;
+  $("#saveBadge").textContent=S.savedAt?"자동 저장됨 "+S.savedAt:"자동 저장 대기 중";
+  refresh();renderReport();
+}
+
+/* ---------- boot ---------- */
+(function boot(){
+  const last=sGet(PREFIX+"last");
+  if(!storageOK)$("#storageWarn").hidden=false;
+  if(last){const d=sGet(last);if(d){try{S=merge(blank(),JSON.parse(d));currentKey=last;}catch(e){}}}
+  renderAll();
+  if(S.info.confirmed)$("#infoMsg").textContent=`${S.info.cls}반 ${S.info.num}번 ${S.info.name} 학생의 기록을 이어서 작성 중이에요.`;
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(()=>{});
+})();
+})();
+</script>
+
+</body>
+</html>
