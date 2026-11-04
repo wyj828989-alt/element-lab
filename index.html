@@ -525,17 +525,24 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
   <!-- R&D -->
   <section class="sheet gated" id="sec-rd">
     <div class="lockmsg">연구원 등록을 먼저 해 주세요</div>
-    <div class="sheet-h"><span class="no">Step 1 · R&amp;D</span><h2>우리 제품의 핵심 원소와 화합물 찾기</h2><span class="pill" id="pill-rd">7분 · 모둠</span></div>
+    <div class="sheet-h"><span class="no">Step 1 · R&amp;D</span><h2>현재 사용되는 신소재 제품의 핵심 원소와 화합물 찾기</h2><span class="pill" id="pill-rd">7분 · 모둠</span></div>
     <div class="sheet-b">
+      <p class="lead">예시를 참고하여, 우리 팀이 고른 문제 영역에서 <b>이미 개발되어 실제로 쓰이고 있는 신소재 제품</b>을 하나 찾아보세요. 그리고 그 제품을 이루는 원소와 화합물을 조사합니다. 이 제품은 다음 시간부터 우리 연구소가 더 좋게 만들어 볼 <b>참고 제품</b>이 됩니다.</p>
+      <div class="box q">
+        <div class="qt">조사할 때 이렇게 검색해 보세요 <span class="note">— 우리 팀 문제 영역이 강조돼요.</span></div>
+        <div class="chips" id="searchTips"></div>
+        <div class="note">찾은 자료의 출처(누리집, 뉴스 기사, 교과서 등)를 꼭 함께 적어 주세요.</div>
+      </div>
       <div class="tablewrap">
         <table class="rd">
-          <thead><tr><th style="width:70px">모둠</th><th style="width:130px">선택한 문제 영역</th><th style="width:170px">신소재 아이디어 제품명</th><th>사용 원소</th><th>사용 화합물</th></tr></thead>
+          <thead><tr><th style="width:70px">모둠</th><th style="width:110px">문제 영역</th><th style="width:170px">현재 사용되는 신소재 제품</th><th style="width:220px">어디에 쓰이고, 어떤 문제를 해결하나요?</th><th>사용 원소</th><th>사용 화합물</th></tr></thead>
           <tbody>
-            <tr class="ex"><td>예시) 1모둠</td><td>친환경 세제</td><td>콩기름 추출 생분해성 액체 세제</td><td>탄소(C), 수소(H), 산소(O), 칼륨(K)</td><td>수산화 칼륨(KOH), 글리세린</td></tr>
-            <tr><td id="rd-team">–</td><td id="rd-area">–</td><td><input id="rd-product" type="text" data-bind="rd.product" placeholder="제품명"></td><td><div class="chips" id="rd-els"></div></td><td><div class="chips" id="rd-cps"></div></td></tr>
+            <tr class="ex"><td>예시) 1모둠</td><td>친환경 세제</td><td>콩기름 추출 생분해성 액체 세제</td><td>빨래·설거지용 세제. 합성 세제보다 물속에서 잘 분해되어 하천 오염을 줄인다.</td><td>탄소(C), 수소(H), 산소(O), 칼륨(K)</td><td>수산화 칼륨(KOH), 글리세린</td></tr>
+            <tr><td id="rd-team">–</td><td id="rd-area">–</td><td><textarea id="rd-product" data-bind="rd.product" rows="3" placeholder="찾은 제품 이름"></textarea></td><td><textarea id="rd-use" data-bind="rd.use" rows="3" placeholder="쓰임과 해결하는 문제"></textarea></td><td><div class="chips" id="rd-els"></div></td><td><div class="chips" id="rd-cps"></div></td></tr>
           </tbody>
         </table>
       </div>
+      <label class="f">조사 출처<input id="rd-src" type="text" data-bind="rd.src" placeholder="예: ○○회사 누리집, ○○신문 기사(2026.10.)"></label>
       <div class="q">
         <div class="qt">사용 원소 고르기 <span class="note">— 주기율표 타일을 누르면 추가되고, 다시 누르면 빠져요.</span></div>
         <div class="tablewrap"><div class="ptable" id="ptable"></div></div>
@@ -543,9 +550,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
       <div class="q">
         <div class="qt">사용 화합물 고르기</div>
         <div class="chips" id="cpchoices"></div>
-        <div class="row" style="max-width:520px"><input id="cp-custom" type="text" placeholder="목록에 없는 화합물 직접 입력 (예: 녹말)" style="flex:1"><button class="btn small" id="cpAdd">추가</button></div>
+        <div class="row" style="max-width:520px"><input id="cp-custom" type="text" placeholder="목록에 없는 화합물 직접 입력 (예: 지방산)" style="flex:1"><button class="btn small" id="cpAdd">추가</button></div>
       </div>
-      <label class="f">오늘의 마무리 — 우리 연구소가 다음 시간에 확인하고 싶은 것은?<textarea id="rd-next" data-bind="rd.next" rows="2"></textarea></label>
+      <label class="f">오늘의 마무리 — 이 제품을 참고할 때, 우리 연구소가 더 좋게 만들고 싶은 점은?<textarea id="rd-next" data-bind="rd.next" rows="2"></textarea></label>
     </div>
   </section>
 
@@ -577,7 +584,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none}
 <script>
 (function(){
 "use strict";
-const TEACHER_PW = "1234";
+const TEACHER_PW = "8289";
 const SCHOOL = "정화중학교";
 const LESSON = "ELEMENT LAB 1차시";
 const PREFIX = "elementlab-1:";
@@ -594,7 +601,7 @@ const ROLES = [
 ];
 const ROADMAP = [
   ["Step 0","킥오프","연구소 설립 + 해결할 문제 정하기"],
-  ["Step 1","원소 및 소재 탐색","우리 제품의 핵심 원소와 화합물 찾아보기"],
+  ["Step 1","원소 및 소재 탐색","현재 사용되는 신소재 제품의 핵심 원소와 화합물 찾아보기"],
   ["Step 2","원소 기호와 화학식 설계","원소들을 조합하여 제품의 화학식 완성하기"],
   ["Step 3","원소 구성 입자 분석","원소를 이루는 입자(원자) 파악하기"],
   ["Step 4","주기율표 활용","원소 주기율표에서 대체 원소 후보 찾기"],
@@ -619,9 +626,11 @@ const ELEMENTS = [
   [11,"Na","나트륨",3,1],[12,"Mg","마그네슘",3,2],[13,"Al","알루미늄",3,13],[14,"Si","규소",3,14],[15,"P","인",3,15],[16,"S","황",3,16],[17,"Cl","염소",3,17],[18,"Ar","아르곤",3,18],
   [19,"K","칼륨",4,1],[20,"Ca","칼슘",4,2],[26,"Fe","철",4,8],[29,"Cu","구리",4,11],[30,"Zn","아연",4,12],
   [47,"Ag","은",5,11],[53,"I","아이오딘",5,17],
+  [22,"Ti","타이타늄",4,4],[25,"Mn","망가니즈",4,7],[27,"Co","코발트",4,9],[28,"Ni","니켈",4,10],
   [79,"Au","금",6,11],[80,"Hg","수은",6,12],[82,"Pb","납",6,14]
 ];
-const COMPOUNDS = ["물(H₂O)","이산화 탄소(CO₂)","염화 나트륨(NaCl)","수산화 칼륨(KOH)","수산화 나트륨(NaOH)","글리세린","녹말","셀룰로스","젖산","탄산 칼슘(CaCO₃)"];
+const COMPOUNDS = ["물(H₂O)","이산화 탄소(CO₂)","염화 나트륨(NaCl)","수산화 칼륨(KOH)","수산화 나트륨(NaOH)","글리세린","녹말","셀룰로스","젖산","폴리락트산(PLA)","탄산 칼슘(CaCO₃)","리튬 인산철(LiFePO₄)","리튬 코발트 산화물(LiCoO₂)","차아염소산 나트륨(NaClO)","이산화 규소(SiO₂)","이산화 타이타늄(TiO₂)"];
+const SEARCH_TIPS = [["수질 오염","정수 필터 활성탄 성분"],["미세플라스틱","생분해 섬유 라이오셀 원료"],["친환경 세제","식물성 친환경 세제 성분"],["배터리·에너지 저장","전기차 LFP 배터리 성분"],["생분해 소재","PLA 빨대 원료"]];
 const LOGO_SYMS = ["H","C","N","O","Na","Mg","Al","Si","Cl","K","Ca","Fe","Cu","Ag","Au","Li"];
 const COLORS = ["#16304f","#0d8486","#d23c3c","#e0a100","#2f8a3e","#7a4cc2","#ffffff"];
 
@@ -649,7 +658,7 @@ function blank(){return {
   s0:{area:"",custom:"",q1:"",q2:"",q3:"",defArea:"",product:"",defLab:""},
   s1:{count:""},
   lav:{q0:"",gas:"",change:"",q2:"",q3:""},
-  rd:{product:"",els:[],cps:[],next:""},
+  rd:{product:"",use:"",src:"",els:[],cps:[],next:""},
   dnd:{},solved:{},tries:{},
   savedAt:""
 };}
@@ -981,6 +990,7 @@ function renderRdChips(){
   $("#cpchoices").innerHTML=all.map(c=>`<button class="chip ${S.rd.cps.includes(c)?"on":""}" data-cp="${esc(c)}">${esc(c)}</button>`).join("");
   $("#rd-team").textContent=S.info.team?S.info.team+"모둠":"–";
   $("#rd-area").textContent=areaLabel()||"Step 0에서 선택";
+  $("#searchTips").innerHTML=SEARCH_TIPS.map(([ar,q])=>`<span class="chip ${S.s0.area===ar?"on":""}" style="cursor:default">${esc(ar)}: “${esc(q)}”</span>`).join("");
 }
 document.addEventListener("click",e=>{
   const a=e.target.closest("[data-rmel]");if(a){S.rd.els=S.rd.els.filter(x=>x!==a.dataset.rmel);renderPT();renderRdChips();markDirty();return;}
@@ -990,8 +1000,6 @@ document.addEventListener("click",e=>{
 $("#cpAdd").addEventListener("click",()=>{const v=$("#cp-custom").value.trim();if(!v)return;if(!S.rd.cps.includes(v))S.rd.cps.push(v);$("#cp-custom").value="";renderRdChips();markDirty();});
 $("#cp-custom").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("#cpAdd").click();}});
 // keep product in sync with step0 definition if empty
-document.addEventListener("input",e=>{if(e.target.id==="def-product"&&(!S.rd.product||S.rd.product===prevProd)){S.rd.product=e.target.value;$("#rd-product").value=e.target.value;}if(e.target.id==="def-product")prevProd=e.target.value;});
-let prevProd="";
 
 /* ---------- progress ---------- */
 function doneMap(){
@@ -1003,7 +1011,7 @@ function doneMap(){
     "sec-s0":!!(areaLabel()&&s0.q1.trim()&&s0.q2.trim()&&s0.q3.trim()&&s0.product.trim()&&s0.defArea.trim()&&s0.defLab.trim()),
     "sec-s1":!!(S.solved.blanks&&S.solved.count&&S.solved.sort),
     "sec-lav":!!(S.solved.q0&&S.solved.q1&&S.solved.order&&v.q3.trim().length>=15),
-    "sec-rd":!!(r.product.trim()&&r.els.length>=2&&r.cps.length>=1&&r.next.trim())
+    "sec-rd":!!(r.product.trim()&&r.use.trim()&&r.els.length>=1&&r.next.trim())
   };
 }
 const PILLTXT={"sec-info":"1분","sec-g1":"7분 · 모둠","sec-g2":"5분","sec-s0":"8분 · 모둠","sec-s1":"8분","sec-lav":"10분","sec-rd":"7분 · 모둠"};
@@ -1049,10 +1057,12 @@ function renderReport(){
   <tr><th>1. 기체 / 내부 변화</th><td>${esc(v.gas)} / ${esc(v.change)} ${yes(S.solved.q1)} (시도 ${t("q1")})</td></tr>
   <tr><th>2. 질량 증가 까닭</th><td>${esc(v.q2)} ${S.solved.order?"":"<br>"+yes(false)} (순서 배열 시도 ${t("order")})</td></tr>
   <tr><th>3. 4원소설이 틀린 이유</th><td>${esc(v.q3)}</td></tr></table>
-  <h4>R&amp;D 미션 · 우리 제품의 핵심 원소와 화합물</h4>
-  <table><tr><th>모둠 / 문제 영역</th><td>${esc(i.team)}모둠 / ${esc(areaLabel())}</td></tr><tr><th>제품명</th><td>${esc(r.product)}</td></tr>
+  <h4>R&amp;D 미션 · 현재 사용되는 신소재 제품의 핵심 원소와 화합물</h4>
+  <table><tr><th>모둠 / 문제 영역</th><td>${esc(i.team)}모둠 / ${esc(areaLabel())}</td></tr><tr><th>찾은 신소재 제품</th><td>${esc(r.product)}</td></tr>
+  <tr><th>쓰임과 해결하는 문제</th><td>${esc(r.use)}</td></tr>
   <tr><th>사용 원소</th><td>${esc(r.els.map(elLabel).join(", "))}</td></tr><tr><th>사용 화합물</th><td>${esc(r.cps.join(", "))}</td></tr>
-  <tr><th>다음 시간에 확인할 것</th><td>${esc(r.next)}</td></tr></table>
+  <tr><th>조사 출처</th><td>${esc(r.src)}</td></tr>
+  <tr><th>더 좋게 만들고 싶은 점</th><td>${esc(r.next)}</td></tr></table>
   <h4>진행 요약</h4>
   <table><tr><th>완료한 활동</th><td>${Object.values(dm).filter(Boolean).length} / ${Object.keys(dm).length}</td></tr></table>`;
 }
@@ -1138,7 +1148,7 @@ function showAnswers(){
   <li>라부아지에: (물)을 분해 / 1. 수소, 물에서 나온 산소가 철과 결합하여 산화 철(녹)이 생성</li>
   <li>2. 물이 수소와 산소로 분해되었고, 이때 생긴 산소가 주철관의 철과 결합해 산화 철로 남았다. 결합한 산소의 질량만큼 주철관 전체의 질량이 증가했다.</li>
   <li>3. 4원소설은 물을 더 이상 나눌 수 없는 원소로 보았다. 그러나 물은 수소와 산소라는 두 종류의 물질로 분해되었으므로 원소가 아니라 화합물이다. 따라서 4원소설은 틀렸다.</li>
-  <li>R&amp;D 미션 예시: 친환경 세제 — C, H, O, K / 수산화 칼륨(KOH), 글리세린</li></ol>
+  <li>R&amp;D 미션(현재 사용되는 신소재 제품) 예시 — 친환경 세제: 콩기름 생분해성 액체 세제(C, H, O, K / KOH, 글리세린) · 생분해 소재: PLA 빨대(C, H, O / 폴리락트산, 젖산) · 배터리: 전기차 LFP 배터리(Li, Fe, P, O, C / 리튬 인산철) · 수질 오염: 활성탄 정수 필터(C / 활성탄은 탄소로 된 물질) · 미세플라스틱: 라이오셀 섬유(C, H, O / 셀룰로스). 학생이 찾은 다른 제품도 출처가 있으면 인정.</li></ol>
   <p class="note">비밀번호는 코드 맨 위 TEACHER_PW 값으로 바꿀 수 있어요.</p><button class="btn" data-close>닫기</button>`);
 }
 
@@ -1155,7 +1165,7 @@ function renderAll(){
   if(S.solved.count)$("#count").disabled=true;else $("#count").disabled=false;
   $("#q2wrap").hidden=!S.solved.order;
   renderOpts();renderAreas();renderPT();
-  prevLab=S.lab.name;prevProd=S.s0.product;
+  prevLab=S.lab.name;
   $("#kw").hidden=true;
   $("#saveBadge").textContent=S.savedAt?"자동 저장됨 "+S.savedAt:"자동 저장 대기 중";
   refresh();renderReport();
