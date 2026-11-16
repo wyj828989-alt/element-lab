@@ -663,7 +663,7 @@ section.sheet{border-radius:18px;border-color:var(--line);box-shadow:var(--shado
         <div class="qt"><span class="n">2</span>화학식을 나타내는 방법</div>
         <div class="anat"><svg viewBox="0 0 520 190" role="img" aria-label="2H2O 화학식 읽는 법">
           <text class="big" x="150" y="112">2</text><text class="big" x="190" y="112">H</text><text x="226" y="122" style="font-family:var(--f-mono);font-size:26px;font-weight:600">2</text><text class="big" x="250" y="112">O</text>
-          <path d="M162 124 V150 H80" fill="none" stroke="var(--accent)" stroke-width="2"/><text x="20" y="168" style="fill:var(--accent)">물질(분자)의 개수</text>
+          <path d="M162 124 V150 H80" fill="none" stroke="var(--accent)" stroke-width="2"/><text x="20" y="168" style="fill:var(--accent)">H₂O가 몇 개인지</text>
           <path d="M205 70 V40 H150" fill="none" stroke="var(--navy)" stroke-width="2"/><text x="40" y="34">원자의 종류 = 원소 기호</text>
           <path d="M233 130 V160 H300" fill="none" stroke="var(--accent)" stroke-width="2"/><text x="306" y="166" style="fill:var(--accent)">원자의 수 (오른쪽 아래 작게)</text>
           <path d="M268 70 V40 H330" fill="none" stroke="var(--navy)" stroke-width="2"/><text x="336" y="34">O 1개는 숫자 ‘1’ 생략</text>
@@ -687,7 +687,7 @@ section.sheet{border-radius:18px;border-color:var(--line);box-shadow:var(--shado
           <thead><tr><th style="width:44px">번호</th><th>화학식 분석 항목</th><th>분석 결과</th></tr></thead>
           <tbody id="nh3Body"></tbody>
         </table></div>
-        <div class="box">개념 돋보기 — 원자 몇 개가 뭉쳐서 고유한 성질을 가지게 된 입자를 <b>분자</b>라고 합니다. 화학식 앞의 큰 숫자 ( <input id="nh-big" type="number" data-bind="nh.big" style="width:80px;display:inline-block"> )는 이 분자가 총 몇 개 있다는 뜻입니다.</div>
+        <div class="box">개념 돋보기 — 화학식 앞의 큰 숫자 ( <input id="nh-big" type="number" data-bind="nh.big" style="width:80px;display:inline-block"> )는 NH₃가 4개 있다는 뜻입니다. 이렇게 원자가 모여 이루어진 입자는 Step 5에서 ‘분자’라는 이름으로 배워요.</div>
         <div class="row"><button class="btn" data-check="nh3">확인</button><button class="btn ghost small" data-hint="nh3" hidden>힌트</button><span class="tries" data-tries="nh3"></span></div>
         <div class="fb" data-fb="nh3"></div>
       </div>
@@ -697,7 +697,7 @@ section.sheet{border-radius:18px;border-color:var(--line);box-shadow:var(--shado
         <p class="lead" style="margin:0">1차시에 찾은 화합물을 골라 화학식을 쓰면, 어떤 원자가 몇 개 들어 있는지 자동으로 분석해 줘요. 최대 3개까지 만들 수 있어요.</p>
         <details class="box"><summary style="cursor:pointer;font-weight:600">화학식 찾기 도움말</summary>
           <div class="tablewrap" style="margin-top:8px"><table class="atable"><tbody id="formulaHelp"></tbody></table></div>
-          <p class="note" style="margin:6px 0 0">녹말·셀룰로스·PLA처럼 매우 큰 분자는 같은 단위가 반복돼요. 반복 단위의 화학식을 써 보세요.</p>
+          <p class="note" style="margin:6px 0 0">녹말·셀룰로스·PLA처럼 매우 큰 물질은 같은 단위가 반복돼요. 반복 단위의 화학식을 써 보세요.</p>
         </details>
         <div id="fcards" class="grid" style="gap:10px"></div>
         <div class="row"><button class="btn ghost small" id="addCard">＋ 화합물 카드 추가</button></div>
@@ -915,7 +915,7 @@ const HINTS = {
   berz:"베르셀리우스는 원소 이름(라틴어)의 첫 글자를 썼어요. 금 Aurum, 은 Argentum, 구리 Cuprum, 황 Sulfur.",
   syms:"첫 글자는 대문자, 둘째 글자는 소문자예요. 회색 글씨의 이름(라틴어 포함)에서 기호를 찾아보세요. 예: natrium → Na",
   ftab:"원소 기호 오른쪽 아래 숫자가 원자 수예요. 한 종류의 원자로만 이루어지면 원소, 두 종류 이상이면 화합물이에요.",
-  nh3:"4NH₃는 NH₃ 분자 4개예요. 분자 1개에는 N 1개, H 3개가 있으니 각각에 4를 곱해 보세요.",
+  nh3:"4NH₃는 NH₃가 4개 있다는 뜻이에요. NH₃ 1개에는 N 1개, H 3개가 있으니 각각에 4를 곱해 보세요.",
   struct:"원자핵 주위를 움직이는 것과, 이동하지 못하는 것을 구별해 보세요. ‘성분’은 원소, ‘입자’는 원자예요.",
   models:"원자는 전기적으로 중성이에요. 원자핵의 전하량이 +6이면 전자는 몇 개일까요?",
   myatom:"원자 번호 = 양성자 수 = 전자 수예요. 주기율표에서 고른 원소의 원자 번호를 확인해 보세요."
@@ -1146,9 +1146,9 @@ function buildDnDs(){
   makeDnD("fdef",$("#q-fdef"),seeded(fd,seed+"f"),{f1:["f0"],f2:["f1"]});
   const vd=["1억분의 1","야구공","축구공","빈 공간","1만분의 1","농구공","원자핵","전자"].map((l,i)=>({id:"v"+i,label:l}));
   makeDnD("video",$("#q-video"),seeded(vd,seed+"v"),{v1:["v0"],v2:["v1"],v3:["v2"],v4:["v3"]});
-  const st=["전자","전자","원자핵","양성자수","원소","원자","중성자수","분자"].map((l,i)=>({id:"s"+i,label:l}));
+  const st=["전자","전자","원자핵","양성자수","원소","원자","중성자수","물질"].map((l,i)=>({id:"s"+i,label:l}));
   makeDnD("struct",$("#q-struct"),seeded(st,seed+"s"),{s1:["s0"],s2:["s1"],s3:["s2"],s4:["s3"],s5:["s4"],s6:["s5"]});
-  const pt=["원자핵","양성자","중성자","전자","분자","원소"].map((l,i)=>({id:"p"+i,label:l}));
+  const pt=["원자핵","양성자","중성자","전자","원자","원소"].map((l,i)=>({id:"p"+i,label:l}));
   makeDnD("parts",$("#q-parts"),seeded(pt,seed+"p"),{p1:["p0"],p2:["p1"],p3:["p2"],p4:["p3"]});
 }
 
@@ -1234,7 +1234,7 @@ document.addEventListener("input",e=>{const t=e.target.closest("[data-ff]");if(!
 document.addEventListener("change",e=>{const t=e.target.closest("[data-fk]");if(!t)return;const i=t.dataset.fk;S.ft[i]=S.ft[i]||{};S.ft[i].k=t.value;t.closest("tr").classList.remove("wrong");markDirty();});
 
 /* ---------- NH3 ---------- */
-const NH3_ROWS=[["q1","분자의 종류","select",["암모니아","질소","수소","물"],"암모니아"],["q2","분자의 개수","num",null,"4"],["q3","분자의 구성 원자 종류","chips",["N","H","O","C"],["H","N"]],["q4","분자 1개를 구성하는 총 원자의 수","num",null,"4"],["q5","총 원자의 개수","num",null,"16"],["q6","총 수소 원자의 개수","num",null,"12"],["q7","총 질소 원자의 개수","num",null,"4"]];
+const NH3_ROWS=[["q1","어떤 물질인가요? (물질의 이름)","select",["암모니아","질소","수소","물"],"암모니아"],["q2","NH₃의 개수 (화학식 앞의 숫자)","num",null,"4"],["q3","NH₃를 이루는 원자의 종류","chips",["N","H","O","C"],["H","N"]],["q4","NH₃ 1개를 이루는 원자의 수","num",null,"4"],["q5","총 원자의 개수","num",null,"16"],["q6","총 수소 원자의 개수","num",null,"12"],["q7","총 질소 원자의 개수","num",null,"4"]];
 function renderNh3(){
   const solved=S.solved.nh3;
   $("#nh3Body").innerHTML=NH3_ROWS.map(([k,l,t,o],i)=>{let c="";
